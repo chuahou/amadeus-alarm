@@ -23,7 +23,7 @@
         android:layout_marginBottom="39dp"
         android:layout_marginStart="22dp"
         android:fontFamily="Droid"
-        android:text="@string/connect_to_kurisu"
+        android:text="@string/unset"
         android:textAppearance="@style/TextAppearance.AppCompat"
         android:textColor="#ffdec752"
         android:textSize="22.0sp"

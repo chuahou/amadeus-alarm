@@ -71,6 +71,7 @@ public class Alarm
         }
         SharedPreferences.Editor editor = _sp.edit();
         editor.putLong(_spTimeLong, timeInMillis);
+        editor.commit();
 
         if (time != null)
         {

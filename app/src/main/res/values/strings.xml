@@ -18,4 +18,6 @@
     <string name="turn_off">Turn OFF</string>
     <string name="status_on">Alarm turned on</string>
     <string name="status_off">Alarm turned off</string>
+
+    <string name="unset">nullpo</string>
 </resources>
