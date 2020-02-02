@@ -1,7 +1,6 @@
 package dev.chuahou.amadeusalarm;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -15,7 +14,7 @@ import java.util.Calendar;
 
 import dev.chuahou.amadeusalarm.alarm.AlarmReceiver;
 
-public class SettingActivity extends AppCompatActivity
+public class SettingActivity extends Activity
 {
     private AlarmManager _alarmManager;
     private PendingIntent _pendingIntent;
@@ -62,9 +61,9 @@ public class SettingActivity extends AppCompatActivity
                     new Intent(SettingActivity.this, AlarmReceiver.class);
             _pendingIntent = PendingIntent.getBroadcast(
                     SettingActivity.this, 0, intent, 0);
-            _alarmManager.set(AlarmManager.RTC, alarmTime.getTimeInMillis(),
-                    _pendingIntent);
-//            _alarmManager.set(AlarmManager.RTC, currentTime.getTimeInMillis() + 10000, _pendingIntent);
+//            _alarmManager.set(AlarmManager.RTC, alarmTime.getTimeInMillis(),
+//                    _pendingIntent);
+            _alarmManager.set(AlarmManager.RTC, currentTime.getTimeInMillis() + 2000, _pendingIntent);
 
             Log.d(toString(), "Alarm set at" + alarmTime.toString());
         }

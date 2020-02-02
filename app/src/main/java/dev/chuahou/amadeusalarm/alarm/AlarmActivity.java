@@ -1,8 +1,9 @@
 package dev.chuahou.amadeusalarm.alarm;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.media.MediaPlayer;
+import android.app.Activity;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,9 +12,9 @@ import android.view.View;
 
 import dev.chuahou.amadeusalarm.R;
 
-public class AlarmActivity extends AppCompatActivity
+public class AlarmActivity extends Activity
 {
-    private MediaPlayer _player;
+    private Ringtone _ringtone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -21,14 +22,15 @@ public class AlarmActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
 
-        // create alarm ringtone player
+        // start alarm
         Uri alarmTone =
                 RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-        _player = MediaPlayer.create(this, alarmTone);
-
-        // start alarm
-        _player.setLooping(true);
-        _player.start();
+        _ringtone =
+                RingtoneManager.getRingtone(getApplicationContext(), alarmTone);
+        _ringtone.setAudioAttributes(new AudioAttributes.Builder().
+                setUsage(AudioAttributes.USAGE_ALARM).build());
+        _ringtone.setLooping(true);
+        _ringtone.play();
 
         Log.d(toString(), "Alarm started");
     }
@@ -38,7 +40,7 @@ public class AlarmActivity extends AppCompatActivity
      */
     public void onConnectClick(View view)
     {
-        _player.stop();
+        _ringtone.stop();
 
         Log.d(toString(), "Alarm stopped");
     }
