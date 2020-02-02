@@ -14,7 +14,7 @@ public class SettingActivity extends Activity
     private TextView _text;
     private TimePicker _picker;
 
-    private SimpleDateFormat _fmt = new SimpleDateFormat("MM-dd HH:mm");
+    private final SimpleDateFormat _fmt = new SimpleDateFormat("MM-dd HH:mm");
 
     @Override
     protected void onCreate(Bundle savedInstanceState)

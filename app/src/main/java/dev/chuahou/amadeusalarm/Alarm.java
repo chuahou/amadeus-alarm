@@ -34,7 +34,7 @@ public class Alarm
      */
     private void _updateSp()
     {
-        _sp = _context.getSharedPreferences(_spName, _context.MODE_PRIVATE);
+        _sp = _context.getSharedPreferences(_spName, Context.MODE_PRIVATE);
     }
 
     /**
