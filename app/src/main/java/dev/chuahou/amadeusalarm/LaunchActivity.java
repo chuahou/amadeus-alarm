@@ -68,6 +68,10 @@ public class LaunchActivity extends Activity
                         // if not alarm exit
                         if (_status != Status.STATUS_ALARM)
                             finish();
+
+                        // highlight button
+                        ((ImageView) view).setImageDrawable(
+                                getDrawable(R.drawable.cancel_select));
                     }
                 }
         );
@@ -128,8 +132,18 @@ public class LaunchActivity extends Activity
      */
     private void _setButtonsEnabled(boolean enable)
     {
-        findViewById(R.id.launch_connect).setClickable(enable);
-        findViewById(R.id.launch_cancel).setClickable(enable);
+        ImageView connect = findViewById(R.id.launch_connect);
+        ImageView cancel = findViewById(R.id.launch_cancel);
+
+        connect.setClickable(enable);
+        cancel.setClickable(enable);
+
+        if (enable)
+        {
+            // reset images
+            connect.setImageDrawable(getDrawable(R.drawable.connect_unselect));
+            cancel.setImageDrawable(getDrawable(R.drawable.cancel_unselect));
+        }
     }
 }
 
