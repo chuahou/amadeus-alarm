@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Amadeus</string>
+
+    <!-- setting activity strings -->
+    <string name="setting_alarm_on">Alarm ON</string>
+    <string name="setting_alarm_off">Alarm OFF</string>
 </resources>
