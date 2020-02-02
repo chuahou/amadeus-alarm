@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TimePicker;
 import android.widget.ToggleButton;
 
@@ -100,21 +101,11 @@ public class SettingActivity extends Activity
     }
 
     /**
-     * Handles alarm toggle button being clicked.
+     * Handles alarm button being clicked.
      */
-    public void onToggleClicked(View view)
+    public void onButtonClicked(View view)
     {
-        if (((ToggleButton) view).isChecked())
-        {
-            // alarm turned on
-            _setAlarm();
-        }
-        else
-        {
-            // alarm turned off
-            _alarmManager.cancel(_pendingIntent);
-
-            Log.d(toString(), "Alarm unset");
-        }
+        _setAlarm();
+        finish();
     }
 }

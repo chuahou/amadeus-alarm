@@ -2,8 +2,7 @@
     <string name="app_name">Amadeus</string>
 
     <!-- setting activity strings -->
-    <string name="setting_alarm_on">Alarm ON</string>
-    <string name="setting_alarm_off">Alarm OFF</string>
+    <string name="setting_alarm">Turn on alarm</string>
 
     <!--- notification channel strings -->
     <string name="nc_name">Alarm</string>
