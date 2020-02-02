@@ -8,21 +8,16 @@ import android.widget.ImageView;
 
 public class LaunchActivity extends Activity
 {
-    protected ImageView _logo;
-    private Handler _handler;
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
 
-        // get relevant views
-        _logo = findViewById(R.id.launch_logo);
-
         // start animation
-        _handler = new Handler();
-        _handler.post(new AnimationRunnable(this, _logo, _handler));
+        ImageView logo = findViewById(R.id.launch_logo);
+        Handler handler = new Handler();
+        handler.post(new AnimationRunnable(this, logo, handler));
     }
 }
 
