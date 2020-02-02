@@ -1,4 +1,4 @@
-package dev.chuahou.amadeusalarm;
+package dev.chuahou.amadeusalarm.alarm;
 
 import android.app.Service;
 import android.content.Intent;
