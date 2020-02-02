@@ -37,9 +37,6 @@ public class SettingActivity extends Activity
             Log.d(toString(), "No permissions");
         };
 
-        // create notification channel
-        _createNotificationChannel();
-
         // get time picker
         _timePicker = (TimePicker) findViewById(R.id.alarmTimePicker);
 
@@ -52,6 +49,7 @@ public class SettingActivity extends Activity
     {
         super.onResume();
 
+        // stop alarm if it's somehow still ringing
         if (Ringer.getInstance().isRinging())
         {
             Ringer.getInstance().stop();
@@ -67,22 +65,6 @@ public class SettingActivity extends Activity
                     == PackageManager.PERMISSION_GRANTED) &&
                (checkSelfPermission(Manifest.permission.USE_FULL_SCREEN_INTENT)
                     == PackageManager.PERMISSION_GRANTED);
-    }
-
-    /**
-     * Creates notification channel.
-     */
-    private void _createNotificationChannel()
-    {
-        NotificationChannel nc = new NotificationChannel(
-                getString(R.string.nc_id),
-                getString(R.string.nc_name),
-                NotificationManager.IMPORTANCE_HIGH
-        );
-        nc.setDescription(getString(R.string.nc_desc));
-        NotificationManager notificationManager =
-                getSystemService(NotificationManager.class);
-        notificationManager.createNotificationChannel(nc);
     }
 
     /**

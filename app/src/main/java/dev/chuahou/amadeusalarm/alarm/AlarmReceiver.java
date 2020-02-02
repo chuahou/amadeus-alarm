@@ -1,5 +1,6 @@
 package dev.chuahou.amadeusalarm.alarm;
 
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -21,6 +22,9 @@ public class AlarmReceiver extends BroadcastReceiver
         // ring alarm
         Ringer.getInstance().start(context);
 
+        // create notification channel
+        _createNotificationChannel(context);
+
         // start alarm activity
         Intent newIntent = new Intent(context, AlarmActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(
@@ -37,5 +41,21 @@ public class AlarmReceiver extends BroadcastReceiver
         NotificationManager nm =
                 context.getSystemService(NotificationManager.class);
         nm.notify(0, builder.build());
+    }
+
+    /**
+     * Creates notification channel.
+     */
+    private void _createNotificationChannel(Context context)
+    {
+        NotificationChannel nc = new NotificationChannel(
+                context.getString(R.string.nc_id),
+                context.getString(R.string.nc_name),
+                NotificationManager.IMPORTANCE_HIGH
+        );
+        nc.setDescription(context.getString(R.string.nc_desc));
+        NotificationManager notificationManager =
+                context.getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(nc);
     }
 }
