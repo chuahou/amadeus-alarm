@@ -64,6 +64,7 @@ public class SettingActivity extends AppCompatActivity
                     SettingActivity.this, 0, intent, 0);
             _alarmManager.set(AlarmManager.RTC, alarmTime.getTimeInMillis(),
                     _pendingIntent);
+//            _alarmManager.set(AlarmManager.RTC, currentTime.getTimeInMillis() + 10000, _pendingIntent);
 
             Log.d(toString(), "Alarm set at" + alarmTime.toString());
         }
