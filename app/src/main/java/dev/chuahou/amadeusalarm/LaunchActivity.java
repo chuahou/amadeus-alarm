@@ -95,7 +95,9 @@ public class LaunchActivity extends Activity
         _setButtonsEnabled(false);
 
         // TODO: Actual things
+
         startActivity(new Intent(this, SettingActivity.class));
+        setStatusDisconnected();
     }
 
     /**
@@ -105,6 +107,7 @@ public class LaunchActivity extends Activity
     {
         Log.d("STATUS", "DISCONNECTED");
         setStatusLaunch();
+        _text.setText(R.string.disconnected);
         _status = Status.STATUS_DISCONNECT;
     }
 
