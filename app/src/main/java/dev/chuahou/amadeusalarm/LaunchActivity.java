@@ -21,15 +21,24 @@ public class LaunchActivity extends Activity
     }
 }
 
+/**
+ * Runnable class implementing the Amadeus logo animation.
+ */
 class AnimationRunnable implements Runnable
 {
-    private Context _context;
-    private ImageView _logo;
-    private Handler _handler;
-    private int _i = 1;
-    private final int _frames;
-    private final int _timeBetweenFrames;
+    private Context _context; // application context
+    private ImageView _logo; // logo ImageView
+    private Handler _handler; // Handler to schedule frames
+    private int _i = 1; // iterator through frames
+    private final int _frames; // total number of frames
+    private final int _timeBetweenFrames; // time between frames for Handler
 
+    /**
+     * Constructor for Amadeus logo animation Runnable.
+     * @param context application context
+     * @param logo logo ImageView
+     * @param handler Handler to schedule frames
+     */
     public AnimationRunnable(
             Context context, ImageView logo, Handler handler)
     {
@@ -41,16 +50,23 @@ class AnimationRunnable implements Runnable
                 _context.getResources().getInteger(R.integer.time_between_frames);
     }
 
+    /**
+     * Runs the animation.
+     */
     @Override
     public void run()
     {
-        if (_i < _frames)
-        {
-            String filename = "logo" + _i;
-            int id = _context.getResources().getIdentifier(filename, "drawable",
-                    _context.getPackageName());
-            _logo.setImageDrawable(_context.getDrawable(id));
-            _i++;
+        // get next frame
+        String filename = "logo" + _i;
+        int id = _context.getResources().getIdentifier(filename, "drawable",
+                _context.getPackageName());
+
+        // set ImageView to next frame
+        _logo.setImageDrawable(_context.getDrawable(id));
+        _i++;
+
+        // schedule next frame
+        if (_i < _frames) {
             _handler.postDelayed(this, _timeBetweenFrames);
         }
     }
