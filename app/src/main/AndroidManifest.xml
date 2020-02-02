@@ -23,9 +23,6 @@
             android:name=".alarm.AlarmActivity"
             android:label="@string/app_name">
         </activity>
-        <service
-            android:name=".alarm.AlarmService"
-            android:enabled="true" />
     </application>
 
 </manifest>
