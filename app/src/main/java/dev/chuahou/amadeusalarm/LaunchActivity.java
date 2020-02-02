@@ -4,10 +4,23 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class LaunchActivity extends Activity
 {
+    public enum Status {
+        STATUS_LAUNCH,      // first launch:    "Connect to Kurisu?"
+        STATUS_CONNECTING,  // connect button:  "Connecting..."
+        STATUS_DISCONNECT,  // from settings:   "Disconnected."
+        STATUS_ALARM        // alarm ringing:   "Call from Kurisu."
+    }
+    private Status _status;
+
+    private TextView _text;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -18,6 +31,86 @@ public class LaunchActivity extends Activity
         ImageView logo = findViewById(R.id.launch_logo);
         Handler handler = new Handler();
         handler.post(new AnimationRunnable(this, logo, handler));
+
+        // get text view
+        _text = findViewById(R.id.launch_text);
+
+        // set initial state
+        setStatusLaunch();
+    }
+
+    /**
+     * Handles connect button clicked.
+     */
+    public void onConnectClick(View view)
+    {
+        Log.d(_status.toString(), "CONNECT CLICKED");
+
+        // highlight button
+        ((ImageView) view).setImageDrawable(
+                getDrawable(R.drawable.connect_select));
+
+        // set status
+        setStatusConnecting();
+    }
+
+    /**
+     * Handles cancel button clicked.
+     */
+    public void onCancelClick(View view)
+    {
+        Log.d(_status.toString(), "CANCEL CLICKED");
+    }
+
+    /**
+     * Set status to initial launch.
+     */
+    public void setStatusLaunch()
+    {
+        Log.d("STATUS", "LAUNCH");
+        _status = Status.STATUS_LAUNCH;
+        _text.setText(R.string.connect_to_kurisu);
+        _setButtonsEnabled(true);
+    }
+
+    /**
+     * Set status to connecting.
+     */
+    public void setStatusConnecting()
+    {
+        Log.d("STATUS", "CONNECTING");
+        _status = Status.STATUS_CONNECTING;
+        _text.setText(R.string.connecting);
+        _setButtonsEnabled(false);
+    }
+
+    /**
+     * Set status to disconnected.
+     */
+    public void setStatusDisconnected()
+    {
+        Log.d("STATUS", "DISCONNECTED");
+        setStatusLaunch();
+        _status = Status.STATUS_DISCONNECT;
+    }
+
+    /**
+     * Set status to alarm ringing.
+     */
+    public void setStatusAlarm()
+    {
+        Log.d("STATUS", "ALARM");
+        // TODO: implement
+    }
+
+    /**
+     * Enables or disables both buttons.
+     * @param enable whether to enable/disable
+     */
+    private void _setButtonsEnabled(boolean enable)
+    {
+        findViewById(R.id.launch_connect).setClickable(enable);
+        findViewById(R.id.launch_cancel).setClickable(enable);
     }
 }
 
