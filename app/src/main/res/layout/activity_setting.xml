@@ -22,10 +22,22 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:checked="false"
-        android:onClick="onButtonClicked"
+        android:onClick="onSetClicked"
         android:text="@string/setting_alarm"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/alarmTimePicker" />
+
+    <Button
+        android:id="@+id/alarmUnsetButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:onClick="onUnsetClicked"
+        android:text="@string/unsetting_alarm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/alarmSetButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

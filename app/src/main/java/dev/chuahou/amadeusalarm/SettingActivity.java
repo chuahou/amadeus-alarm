@@ -101,11 +101,26 @@ public class SettingActivity extends Activity
     }
 
     /**
+     * Unsets the alarm.
+     */
+    private void _unsetAlarm()
+    {
+        // TODO
+    }
+
+    /**
      * Handles alarm button being clicked.
      */
-    public void onButtonClicked(View view)
+    public void onSetClicked(View view)
     {
         _setAlarm();
-        finish();
+    }
+
+    /**
+     * Handles unset alarm button being clicked.
+     */
+    public void onUnsetClicked(View view)
+    {
+        _unsetAlarm();
     }
 }

@@ -41,5 +41,4 @@ public class AlarmActivity extends Activity
     @Override
     public void onBackPressed() {}
 
-
 }
