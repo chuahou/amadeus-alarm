@@ -5,6 +5,9 @@
     <string name="connect_to_kurisu">Connect to Kurisu?</string>
     <string name="connecting">Connecting...</string>
     <string name="disconnected">Disconnected.</string>
+    <string name="logo_content_desc">Amadeus logo</string>
+    <string name="connect_desc">Connect</string>
+    <string name="cancel_desc">Cancel</string>
 
     <!-- CallActivity -->
     <string name="call_from_kurisu">Call from Kurisu.</string>

@@ -6,21 +6,21 @@
     android:background="@drawable/gradient_background">
 
     <ImageView
-        android:id="@+id/imageView_logo"
+        android:id="@+id/launch_logo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/textView_call"
+        android:layout_above="@+id/launch_text"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:adjustViewBounds="true"
+        android:contentDescription="@string/logo_content_desc"
         android:src="@drawable/logo39" />
 
     <TextView
-        android:id="@+id/textView_call"
+        android:id="@+id/launch_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="39dp"
-        android:layout_marginLeft="22dp"
         android:layout_marginStart="22dp"
         android:fontFamily="Droid"
         android:text="@string/connect_to_kurisu"
@@ -28,29 +28,29 @@
         android:textColor="#ffdec752"
         android:textSize="22.0sp"
         android:typeface="monospace"
-        android:layout_above="@+id/imageView_connect"
-        android:layout_alignParentLeft="true"
+        android:layout_above="@+id/launch_connect"
         android:layout_alignParentStart="true" />
 
     <ImageView
-        android:id="@+id/imageView_connect"
+        android:id="@+id/launch_connect"
         android:layout_width="180.0dip"
         android:layout_height="40.0dip"
-        android:layout_alignLeft="@+id/imageView_cancel"
         android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/imageView_cancel"
+        android:layout_alignStart="@+id/launch_cancel"
         android:layout_marginBottom="136dp"
         android:adjustViewBounds="false"
+        android:contentDescription="@string/connect_desc"
         android:src="@drawable/connect_unselect" />
 
     <ImageView
-        android:id="@+id/imageView_cancel"
+        android:id="@+id/launch_cancel"
         android:layout_width="180.0dip"
         android:layout_height="40.0dip"
-        android:layout_below="@+id/textView_call"
+        android:layout_below="@+id/launch_text"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="51dp"
         android:adjustViewBounds="false"
+        android:contentDescription="@string/cancel_desc"
         android:src="@drawable/cancel_unselect" />
 
 </RelativeLayout>
