@@ -37,29 +37,39 @@ public class LaunchActivity extends Activity
 
         // set initial state
         setStatusLaunch();
-    }
 
-    /**
-     * Handles connect button clicked.
-     */
-    public void onConnectClick(View view)
-    {
-        Log.d(_status.toString(), "CONNECT CLICKED");
+        // add button listeners
+        findViewById(R.id.launch_connect).setOnClickListener(
+                new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        Log.d(_status.toString(), "CONNECT CLICKED");
 
-        // highlight button
-        ((ImageView) view).setImageDrawable(
-                getDrawable(R.drawable.connect_select));
+                        // highlight button
+                        ((ImageView) view).setImageDrawable(
+                                getDrawable(R.drawable.connect_select));
 
-        // set status
-        setStatusConnecting();
-    }
+                        // set status
+                        setStatusConnecting();
+                    }
+                }
+        );
+        findViewById(R.id.launch_cancel).setOnClickListener(
+                new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        Log.d(_status.toString(), "CANCEL CLICKED");
 
-    /**
-     * Handles cancel button clicked.
-     */
-    public void onCancelClick(View view)
-    {
-        Log.d(_status.toString(), "CANCEL CLICKED");
+                        // if not alarm exit
+                        if (_status != Status.STATUS_ALARM)
+                            finish();
+                    }
+                }
+        );
     }
 
     /**
@@ -100,7 +110,9 @@ public class LaunchActivity extends Activity
     public void setStatusAlarm()
     {
         Log.d("STATUS", "ALARM");
-        // TODO: implement
+        _setButtonsEnabled(true);
+        _status = Status.STATUS_ALARM;
+        // TODO: to implement
     }
 
     /**

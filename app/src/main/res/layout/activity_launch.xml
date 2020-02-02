@@ -40,7 +40,6 @@
         android:layout_marginBottom="136dp"
         android:adjustViewBounds="false"
         android:contentDescription="@string/connect_desc"
-        android:onClick="onConnectClick"
         android:src="@drawable/connect_unselect" />
 
     <ImageView
@@ -52,7 +51,6 @@
         android:layout_marginTop="51dp"
         android:adjustViewBounds="false"
         android:contentDescription="@string/cancel_desc"
-        android:onClick="onCancelClick"
         android:src="@drawable/cancel_unselect" />
 
 </RelativeLayout>
