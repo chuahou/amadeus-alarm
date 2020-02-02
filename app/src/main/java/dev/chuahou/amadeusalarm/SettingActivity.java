@@ -34,6 +34,37 @@ public class SettingActivity extends Activity
     }
 
     /**
+     * Sets the alarm with current time picker settings.
+     */
+    private void _setAlarm()
+    {
+        // get desired alarm time
+        Calendar alarmTime = Calendar.getInstance();
+        alarmTime.set(Calendar.HOUR_OF_DAY, _timePicker.getHour());
+        alarmTime.set(Calendar.MINUTE, _timePicker.getMinute());
+        alarmTime.set(Calendar.SECOND, 0);
+
+        // check against current time
+        Calendar currentTime = Calendar.getInstance();
+        if (alarmTime.getTimeInMillis() <= currentTime.getTimeInMillis())
+        {
+            // increase alarm time day by 1
+            alarmTime.add(Calendar.DATE, 1);
+        }
+
+        // set alarm
+        Intent intent =
+                new Intent(SettingActivity.this, AlarmReceiver.class);
+        _pendingIntent = PendingIntent.getBroadcast(
+                SettingActivity.this, 0, intent, 0);
+//            _alarmManager.set(AlarmManager.RTC, alarmTime.getTimeInMillis(),
+//                    _pendingIntent);
+        _alarmManager.set(AlarmManager.RTC, currentTime.getTimeInMillis() + 2000, _pendingIntent);
+
+        Log.d(toString(), "Alarm set at" + alarmTime.toString());
+    }
+
+    /**
      * Handles alarm toggle button being clicked.
      */
     public void onToggleClicked(View view)
@@ -41,31 +72,7 @@ public class SettingActivity extends Activity
         if (((ToggleButton) view).isChecked())
         {
             // alarm turned on
-
-            // get desired alarm time
-            Calendar alarmTime = Calendar.getInstance();
-            alarmTime.set(Calendar.HOUR_OF_DAY, _timePicker.getHour());
-            alarmTime.set(Calendar.MINUTE, _timePicker.getMinute());
-            alarmTime.set(Calendar.SECOND, 0);
-
-            // check against current time
-            Calendar currentTime = Calendar.getInstance();
-            if (alarmTime.getTimeInMillis() <= currentTime.getTimeInMillis())
-            {
-                // increase alarm time day by 1
-                alarmTime.add(Calendar.DATE, 1);
-            }
-
-            // set alarm
-            Intent intent =
-                    new Intent(SettingActivity.this, AlarmReceiver.class);
-            _pendingIntent = PendingIntent.getBroadcast(
-                    SettingActivity.this, 0, intent, 0);
-//            _alarmManager.set(AlarmManager.RTC, alarmTime.getTimeInMillis(),
-//                    _pendingIntent);
-            _alarmManager.set(AlarmManager.RTC, currentTime.getTimeInMillis() + 2000, _pendingIntent);
-
-            Log.d(toString(), "Alarm set at" + alarmTime.toString());
+            _setAlarm();
         }
         else
         {
