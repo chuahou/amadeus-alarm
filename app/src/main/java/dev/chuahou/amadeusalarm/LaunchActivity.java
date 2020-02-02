@@ -3,6 +3,7 @@ package dev.chuahou.amadeusalarm;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -21,6 +22,7 @@ public class LaunchActivity extends Activity
     private Status _status;
 
     private TextView _text;
+    private MediaPlayer _mp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -77,6 +79,25 @@ public class LaunchActivity extends Activity
         );
     }
 
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        // if just finished setting, set to disconnected
+        if (_status == Status.STATUS_CONNECTING)
+            setStatusDisconnected();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+
+        // release media player if necessary
+        if (_mp != null) _mp.release();
+    }
+
     /**
      * Set status to initial launch.
      */
@@ -98,10 +119,30 @@ public class LaunchActivity extends Activity
         _text.setText(R.string.connecting);
         _setButtonsEnabled(false);
 
-        // TODO: Actual things
-
-        startActivity(new Intent(this, SettingActivity.class));
-        setStatusDisconnected();
+        // play tone
+        _mp = MediaPlayer.create(this, R.raw.tone);
+        _mp.setOnCompletionListener(
+                new MediaPlayer.OnCompletionListener()
+                {
+                    @Override
+                    public void onCompletion(MediaPlayer mp)
+                    {
+                        mp.release();
+                        startActivity(new Intent(LaunchActivity.this,
+                                SettingActivity.class));
+                    }
+                }
+        );
+        _mp.setOnPreparedListener(
+                new MediaPlayer.OnPreparedListener()
+                {
+                    @Override
+                    public void onPrepared(MediaPlayer mp)
+                    {
+                        mp.start();
+                    }
+                }
+        );
     }
 
     /**
