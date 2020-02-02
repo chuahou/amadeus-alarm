@@ -36,4 +36,10 @@ public class AlarmActivity extends Activity
 
         Log.d(toString(), "Alarm stopped");
     }
+
+    // prevent exiting as far as we can
+    @Override
+    public void onBackPressed() {}
+
+
 }
