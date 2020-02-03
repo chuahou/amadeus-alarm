@@ -121,7 +121,11 @@ public class LaunchActivity extends Activity
     {
         _killAlarm();
 
-        // TODO: Rest of activities
+        // start DoneActivity
+        Intent i = new Intent(this, DoneActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
     }
 
     private void _alarmSnoozed()

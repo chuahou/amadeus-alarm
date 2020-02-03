@@ -27,5 +27,7 @@
     <string name="nc2_name">Notifications</string>
     <string name="nc2_desc">General notification channel</string>
 
+    <!-- Miscellaneous -->
     <string name="unset">nullpo</string>
+    <string name="sg_desc">Steins;Gate worldline divergence</string>
 </resources>
