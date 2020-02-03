@@ -2,7 +2,6 @@ package dev.chuahou.amadeusalarm;
 
 import android.app.Activity;
 import android.app.KeyguardManager;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -15,14 +14,6 @@ import android.widget.TextView;
 
 public class LaunchActivity extends Activity
 {
-    public enum Status {
-        STATUS_LAUNCH,      // first launch:    "Connect to Kurisu?"
-        STATUS_CONNECTING,  // connect button:  "Connecting..."
-        STATUS_DISCONNECT,  // from settings:   "Disconnected."
-        STATUS_ALARM        // alarm ringing:   "Call from Kurisu."
-    }
-    private Status _status;
-
     private TextView _text;
     private MediaPlayer _mp;
 
@@ -35,67 +26,21 @@ public class LaunchActivity extends Activity
         // get text view
         _text = findViewById(R.id.launch_text);
 
-        // this is alarm
-        if (Alarm.getInstance().ringing)
+        // set alarm text
+        if (Alarm.getInstance().isRinging())
         {
-            _alarm();
+            _text.setText(R.string.call_from_kurisu);
         }
+        // set launch text
         else
         {
-            _initialLaunch();
+            _text.setText(R.string.connect_to_kurisu);
         }
 
         // start animation
         ImageView logo = findViewById(R.id.launch_logo);
         Handler handler = new Handler();
         handler.post(new AnimationRunnable(this, logo, handler));
-
-        // add button listeners
-        findViewById(R.id.launch_connect).setOnClickListener(
-                new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View view)
-                    {
-                        Log.d(_status.toString(), "CONNECT CLICKED");
-
-                        // highlight button
-                        ((ImageView) view).setImageDrawable(
-                                getDrawable(R.drawable.connect_select));
-
-                        // handle if alarm
-                        if (_status == Status.STATUS_ALARM)
-                        {
-                            _alarmEnded();
-                        }
-                        else
-                        {
-                            // set status
-                            _connect();
-                        }
-                    }
-                }
-        );
-        findViewById(R.id.launch_cancel).setOnClickListener(
-                new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View view)
-                    {
-                        Log.d(_status.toString(), "CANCEL CLICKED");
-
-                        // if not alarm exit
-                        if (_status != Status.STATUS_ALARM)
-                            finish();
-
-                        // highlight button
-                        ((ImageView) view).setImageDrawable(
-                                getDrawable(R.drawable.cancel_select));
-
-                        _alarmSnoozed();
-                    }
-                }
-        );
     }
 
     @Override
@@ -103,9 +48,14 @@ public class LaunchActivity extends Activity
     {
         super.onResume();
 
+        // enable buttons
+        _setButtonsEnabled(true);
+
         // if just finished setting, set to disconnected
-        if (_status == Status.STATUS_CONNECTING)
-            _disconnect();
+        if (_text.getText().equals(getString(R.string.connecting)))
+        {
+            _text.setText(R.string.disconnected);
+        }
     }
 
     @Override
@@ -121,25 +71,47 @@ public class LaunchActivity extends Activity
     @Override
     public void onBackPressed()
     {
-        if (_status != Status.STATUS_ALARM) super.onBackPressed();
+        if (!Alarm.getInstance().isRinging()) super.onBackPressed();
     }
 
-    private void _alarmEnded()
+    public void onConnectClicked(View view)
     {
-        _killAlarm();
+        Log.d("LAUNCH", "CONNECT CLICKED");
 
-        // start DoneActivity
-        Intent i = new Intent(this, DoneActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(i);
+        // highlight button
+        ((ImageView) view).setImageDrawable(
+                getDrawable(R.drawable.connect_select));
+
+        // handle if alarm
+        if (Alarm.getInstance().isRinging())
+        {
+            Alarm.getInstance().stopAlarm(LaunchActivity.this);
+
+            // start DoneActivity
+            Intent i = new Intent(
+                    LaunchActivity.this, DoneActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                    Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+        }
+        else
+        {
+            // start connecting
+            _connect();
+        }
     }
 
-    private void _alarmSnoozed()
+    public void onCancelClicked(View view)
     {
-        _killAlarm();
+        Log.d("LAUNCH", "CANCEL CLICKED");
+
+        // if not alarm exit
+        if (!Alarm.getInstance().isRinging())
+            finish();
 
         // start SnoozeActivity
+        ((ImageView) view).setImageDrawable(
+                getDrawable(R.drawable.cancel_select));
         Intent i = new Intent(this, SnoozeActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                 Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -147,44 +119,31 @@ public class LaunchActivity extends Activity
     }
 
     /**
-     * Kills currently ringing alarm.
+     * Enables or disables both buttons.
+     * @param enable whether to enable/disable
      */
-    private void _killAlarm()
+    private void _setButtonsEnabled(boolean enable)
     {
-        // stop ringing
-        Ringer.getInstance().stop();
+        ImageView connect = findViewById(R.id.launch_connect);
+        ImageView cancel = findViewById(R.id.launch_cancel);
 
-        // kill notifications
-        NotificationManager nm = getSystemService(NotificationManager.class);
-        nm.cancel(0);
-        nm.cancel(1);
+        connect.setClickable(enable);
+        cancel.setClickable(enable);
 
-        // remove alarm
-        Alarm.getInstance().cancel(this);
-        Alarm.getInstance().ringing = false;
-
-        // reset status
-        _initialLaunch();
+        if (enable)
+        {
+            // reset images
+            connect.setImageDrawable(getDrawable(R.drawable.connect_unselect));
+            cancel.setImageDrawable(getDrawable(R.drawable.cancel_unselect));
+        }
     }
 
     /**
-     * Set status to initial launch.
-     */
-    private void _initialLaunch()
-    {
-        Log.d("STATUS", "LAUNCH");
-        _status = Status.STATUS_LAUNCH;
-        _text.setText(R.string.connect_to_kurisu);
-        _setButtonsEnabled(true);
-    }
-
-    /**
-     * Set status to connecting.
+     * Starts connecting sequence and transitions to SettingActivity.
      */
     private void _connect()
     {
-        Log.d("STATUS", "CONNECTING");
-        _status = Status.STATUS_CONNECTING;
+        Log.d("LAUNCH", "CONNECTING");
         _text.setText(R.string.connecting);
         _setButtonsEnabled(false);
 
@@ -212,58 +171,6 @@ public class LaunchActivity extends Activity
                     }
                 }
         );
-    }
-
-    /**
-     * Set status to disconnected.
-     */
-    private void _disconnect()
-    {
-        Log.d("STATUS", "DISCONNECTED");
-        _initialLaunch();
-        _text.setText(R.string.disconnected);
-        _status = Status.STATUS_DISCONNECT;
-    }
-
-    /**
-     * Set status to alarm ringing.
-     */
-    private void _alarm()
-    {
-        Log.d("STATUS", "ALARM");
-        _setButtonsEnabled(true);
-        _status = Status.STATUS_ALARM;
-        _text.setText(R.string.call_from_kurisu);
-
-        // show above lock screen
-        setTurnScreenOn(true);
-        setShowWhenLocked(true);
-        KeyguardManager km =
-                (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
-        if (km.isKeyguardLocked())
-        {
-            km.requestDismissKeyguard(this, null);
-        }
-    }
-
-    /**
-     * Enables or disables both buttons.
-     * @param enable whether to enable/disable
-     */
-    private void _setButtonsEnabled(boolean enable)
-    {
-        ImageView connect = findViewById(R.id.launch_connect);
-        ImageView cancel = findViewById(R.id.launch_cancel);
-
-        connect.setClickable(enable);
-        cancel.setClickable(enable);
-
-        if (enable)
-        {
-            // reset images
-            connect.setImageDrawable(getDrawable(R.drawable.connect_unselect));
-            cancel.setImageDrawable(getDrawable(R.drawable.cancel_unselect));
-        }
     }
 }
 

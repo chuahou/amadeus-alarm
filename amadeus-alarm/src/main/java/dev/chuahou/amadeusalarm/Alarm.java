@@ -22,91 +22,195 @@ import static android.content.Context.ALARM_SERVICE;
  */
 class Alarm
 {
+    // shared preferences IDs
     private static final String _spName = "AmadeusSP";
     private static final String _spTimeLong = "alarmTime";
 
+    // singleton pattern
     private static Alarm _instance = null;
     private Alarm() {}
-
-    /**
-     * Whether the alarm is currently ringing.
-     */
-    boolean ringing = false;
-
-    /**
-     * Shared preferences to maintain set alarm state.
-     */
-    private SharedPreferences _sp = null;
-
-    /**
-     * Updates shared preferences if required.
-     */
-    private void _updateSp(Context context)
+    static Alarm getInstance()
     {
-        Log.d("ALARM", "UPDATE SP");
-        _sp = context.getSharedPreferences(_spName, Context.MODE_PRIVATE);
+        if (_instance == null) _instance = new Alarm();
+        return _instance;
     }
+
+    // whether the alarm is currently running
+    private boolean _ringing = false;
 
     /**
      * Get currently set alarm time.
      *
-     * @return current set alarm time, null if not set
+     * @param context application context
+     * @return currently set alarm time
      */
     Calendar getAlarmTime(Context context)
     {
         Log.d("ALARM", "GET");
 
-        _updateSp(context);
-        long timeInMillis = _sp.getLong(_spTimeLong, -1L);
-        if (timeInMillis < 0L) return null;
+        // get saved alarm time
+        SharedPreferences sp = context.getSharedPreferences(_spName,
+                Context.MODE_PRIVATE);
+        long alarmTimeMillis = sp.getLong(_spTimeLong, -1L);
+
+        // not set
+        if (alarmTimeMillis < 0L) return null;
+
+        // return Calendar instance
         Calendar c = Calendar.getInstance();
-        c.setTimeInMillis(timeInMillis);
+        c.setTimeInMillis(alarmTimeMillis);
         return c;
     }
 
     /**
-     * Sets alarm time.
+     * Sets alarm time. Cancels alarm if time is null.
      *
+     * @param context application context
      * @param time time to set alarm to
      */
     @SuppressLint("ApplySharedPref")
-    void setAlarmTime(Calendar time, Context context)
+        // commit() to ensure alarm is set immediately
+    void setAlarmTime(Context context, Calendar time)
     {
         Log.d("ALARM", "SET");
 
-        ringing = false;
+        // stop alarm
+        stopAlarm(context);
 
-        _updateSp(context);
-        long timeInMillis;
+        SharedPreferences.Editor editor = context.getSharedPreferences(
+                _spName, Context.MODE_PRIVATE).edit();
+
+        // time is null, cancel alarm
         if (time == null)
         {
-            timeInMillis = -1L;
+            cancelAlarm(context);
+            editor.putLong(_spTimeLong, -1L);
+            editor.commit();
+            return;
+        }
+
+        // set alarm
+        editor.putLong(_spTimeLong, time.getTimeInMillis());
+        editor.commit();
+
+        // post notifications
+        _postAlarmNotification(context, time, true);
+        _postAlarmSetNotification(context, true);
+    }
+
+    /**
+     * Stops currently ringing alarm.
+     *
+     * @param context application context
+     */
+    void stopAlarm(Context context)
+    {
+        // stops ringing
+        _ringing = false;
+        Ringer.getInstance().stop();
+
+        // cancel notifications
+        _postAlarmNotification(context, null, false);
+        _postAlarmSetNotification(context, false);
+        _postRingingNotification(context, false);
+    }
+
+    /**
+     * Starts ringing alarm.
+     *
+     * @param context application context
+     */
+    void startAlarm(Context context)
+    {
+        // starts ringing
+        _ringing = true;
+        Ringer.getInstance().start(context);
+
+        // sends notification
+        _postRingingNotification(context, true);
+    }
+
+    /**
+     * Cancels set alarm.
+     *
+     * @param context application context
+     */
+    void cancelAlarm(Context context)
+    {
+        // stop any currently ringing alarm
+        stopAlarm(context);
+    }
+
+    /**
+     * Checks whether alarm is currently ringing
+     *
+     * @return true if alarm is ringing
+     */
+    boolean isRinging() { return _ringing; }
+
+    /**
+     * Posts/cancels alarm ringing notification with full screen intent.
+     *
+     * @param context application context
+     * @param time time to ring alarm at
+     * @param mode true to post, false to cancel
+     */
+    private void _postAlarmNotification(Context context, Calendar time,
+                                   boolean mode)
+    {
+        // create alarm pending intent
+        PendingIntent pi = PendingIntent.getBroadcast(
+                context, Ids.RC_ALARM, new Intent(context, Receiver.class), 0
+        );
+
+        // get alarm manager
+        AlarmManager am =
+                (AlarmManager) context.getSystemService(ALARM_SERVICE);
+
+        if (am != null)
+        {
+            // post
+            if (mode)
+            {
+                // send alarm to Receiver
+                am.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), pi
+                );
+            }
+            // cancel
+            else
+            {
+                // cancel alarm
+                am.cancel(pi);
+            }
         }
         else
         {
-            timeInMillis = time.getTimeInMillis();
+            Log.e("ERROR", "COULD NOT GET ALARMMANAGER");
         }
-        SharedPreferences.Editor editor = _sp.edit();
-        editor.putLong(_spTimeLong, timeInMillis);
-        editor.commit();
+    }
 
-        if (time != null)
+    /**
+     * Posts/cancels "Alarm is set" notification.
+     *
+     * @param context application context
+     * @param mode true to post, false to cancel
+     */
+    private void _postAlarmSetNotification(Context context, boolean mode)
+    {
+        // get notification manager
+        NotificationManager nm =
+                context.getSystemService(NotificationManager.class);
+        if (nm == null)
         {
-            // get permissions
-            if ((context.checkSelfPermission(Manifest.permission.WAKE_LOCK)
-                    != PackageManager.PERMISSION_GRANTED) ||
-                (context.checkSelfPermission(
-                        Manifest.permission.USE_FULL_SCREEN_INTENT)
-                            != PackageManager.PERMISSION_GRANTED))
-                Log.e("ERROR", "NO PERMISSIONS");
+            Log.e("ERROR", "COULD NOT GET NOTIFICATION MANAGER");
+            return;
+        }
 
-            PendingIntent pi = _getAmPendingIntent(context);
-            AlarmManager am =
-                    (AlarmManager) context.getSystemService(ALARM_SERVICE);
-            am.setExactAndAllowWhileIdle(
-                    AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), pi);
-
-            // set alarm notification channel
+        // post
+        if (mode)
+        {
+            // create notification channel
             NotificationChannel nc = new NotificationChannel(
                     context.getString(R.string.nc2_id),
                     context.getString(R.string.nc2_name),
@@ -114,66 +218,87 @@ class Alarm
             );
             nc.setDescription(context.getString(R.string.nc2_desc));
             nc.setSound(null, null);
-            NotificationManager notificationManager =
-                    context.getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(nc);
 
-            // set alarm notification
-            Intent i = new Intent(context, LaunchActivity.class);
-            PendingIntent pi2 = PendingIntent.getActivity(context, 0, i, 0);
+            // send notification
+            PendingIntent pi = PendingIntent.getActivity(
+                    context, Ids.RC_ALARM_SET, new Intent(),
+                    PendingIntent.FLAG_UPDATE_CURRENT
+            );
             Notification.Builder builder =
                     new Notification.Builder(context,
                             context.getString(R.string.nc2_id))
-                            .setSmallIcon(R.drawable.xp2)
-                            .setContentTitle(context.getString(
-                                    R.string.status_on))
-                            .setAutoCancel(false)
-                            .setOngoing(true)
-                            .setFullScreenIntent(pi, true)
-                            .setCategory(Notification.CATEGORY_PROGRESS);
-            NotificationManager nm =
-                    context.getSystemService(NotificationManager.class);
-            nm.notify(1, builder.build());
+                    .setSmallIcon(R.drawable.xp2)
+                    .setContentTitle(context.getString(R.string.status_on))
+                    .setAutoCancel(false)
+                    .setOngoing(true)
+                    .setCategory(Notification.CATEGORY_PROGRESS);
+            nm.notify(Ids.NOTIF_ALARM_SET, builder.build());
         }
+        // cancel
         else
         {
-            PendingIntent pi = _getAmPendingIntent(context);
-            AlarmManager am =
-                    (AlarmManager) context.getSystemService(ALARM_SERVICE);
-            am.cancel(pi);
-            NotificationManager nm =
-                    context.getSystemService(NotificationManager.class);
-            nm.cancel(1);
+            nm.cancel(Ids.NOTIF_ALARM_SET);
         }
     }
 
     /**
-     * Returns the pending intent used for AlarmManager.
-     * @return pending intent used for AlarmManager
+     * Posts/cancels ringing notification.
+     *
+     * @param context application context
+     * @param mode true to post, false to cancel
      */
-    private PendingIntent _getAmPendingIntent(Context context)
+    private void _postRingingNotification(Context context, boolean mode)
     {
-        return PendingIntent.getBroadcast(
-                context, 0, new Intent(context, Receiver.class), 0
-        );
-    }
+        // get permissions
+        if ((context.checkSelfPermission(Manifest.permission.WAKE_LOCK)
+                != PackageManager.PERMISSION_GRANTED) ||
+                (context.checkSelfPermission(
+                        Manifest.permission.USE_FULL_SCREEN_INTENT)
+                        != PackageManager.PERMISSION_GRANTED))
+            Log.e("ERROR", "NO PERMISSIONS");
 
-    /**
-     * Cancels alarm.
-     */
-    void cancel(Context context)
-    {
-        Log.d("ALARM", "CANCEL");
+        // get notification manager
+        NotificationManager nm =
+                context.getSystemService(NotificationManager.class);
+        if (nm == null)
+        {
+            Log.e("ERROR", "COULD NOT GET NOTIFICATION MANAGER");
+            return;
+        }
 
-        setAlarmTime(null, context);
-    }
+        // post
+        if (mode)
+        {
+            // create notification channel
+            NotificationChannel nc = new NotificationChannel(
+                    context.getString(R.string.nc_id),
+                    context.getString(R.string.nc_name),
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            nc.setDescription(context.getString(R.string.nc_desc));
+            nc.setSound(null, null);
 
-    /**
-     * Returns the singleton instance of the alarm.
-     */
-    static Alarm getInstance()
-    {
-        if (_instance == null) _instance = new Alarm();
-        return _instance;
+            // send notification
+            Intent i = new Intent(context, LaunchActivity.class);
+            PendingIntent pi = PendingIntent.getActivity(
+                    context, Ids.RC_RINGING, i, 0
+            );
+            Notification.Builder builder =
+                    new Notification.Builder(context,
+                            context.getString(R.string.nc_id))
+                        .setSmallIcon(R.drawable.incoming_call)
+                        .setContentTitle(
+                                context.getString(R.string.call_from_kurisu))
+                        .setAutoCancel(false)
+                        .setOngoing(true)
+                        .setFullScreenIntent(pi, true)
+                        .setCategory(Notification.CATEGORY_ALARM);
+            nm.notify(Ids.NOTIF_RINGING, builder.build());
+        }
+        // cancel
+        else
+        {
+            nm.cancel(Ids.NOTIF_RINGING);
+        }
     }
 }

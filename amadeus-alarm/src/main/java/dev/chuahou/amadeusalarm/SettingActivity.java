@@ -2,7 +2,6 @@ package dev.chuahou.amadeusalarm;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.NotificationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -50,7 +49,7 @@ public class SettingActivity extends Activity
 
     /**
      * Handles turn alarm on button clicked.
-     * @param view
+     * @param view clicked button
      */
     public void onOnClicked(View view)
     {
@@ -69,7 +68,7 @@ public class SettingActivity extends Activity
         }
 
         // set alarm
-        Alarm.getInstance().setAlarmTime(time, this);
+        Alarm.getInstance().setAlarmTime(this, time);
 
         // update text
         _text.setText(R.string.status_on);
@@ -78,18 +77,14 @@ public class SettingActivity extends Activity
 
     /**
      * Handles turn alarm off button clicked.
-     * @param view
+     * @param view clicked button
      */
     public void onOffClicked(View view)
     {
         Log.d("SETTING", "OFF");
 
         // cancel alarm
-        Alarm.getInstance().cancel(this);
-        NotificationManager nm = getSystemService(NotificationManager.class);
-        nm.cancel(0);
-        nm.cancel(1);
-        Alarm.getInstance().ringing = false;
+        Alarm.getInstance().cancelAlarm(this);
 
         // update text
         _text.setText(R.string.status_off);

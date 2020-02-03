@@ -29,7 +29,7 @@ public class SnoozeActivity extends Activity
         Calendar time = Calendar.getInstance();
         time.add(Calendar.SECOND,
                 getResources().getInteger(R.integer.snooze_duration_seconds));
-        Alarm.getInstance().setAlarmTime(time, this);
+        Alarm.getInstance().setAlarmTime(this, time);
 
         // wait and quit
         final int duration =
