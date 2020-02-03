@@ -36,7 +36,7 @@ public class LaunchActivity extends Activity
         _text = findViewById(R.id.launch_text);
 
         // this is alarm
-        if (Ringer.getInstance().isRinging())
+        if (Alarm.getInstance().ringing)
         {
             _alarm();
         }

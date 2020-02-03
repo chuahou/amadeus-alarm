@@ -18,6 +18,7 @@ public class Receiver extends BroadcastReceiver
 
         // ring alarm
         Ringer.getInstance().start(context);
+        Alarm.getInstance().ringing = true;
 
         // create notification channel
         _createNotificationChannel(context);
@@ -33,7 +34,8 @@ public class Receiver extends BroadcastReceiver
                             R.string.call_from_kurisu))
                     .setAutoCancel(false)
                     .setOngoing(true)
-                    .setFullScreenIntent(pi, true);
+                    .setFullScreenIntent(pi, true)
+                    .setCategory(Notification.CATEGORY_ALARM);
         NotificationManager nm =
                 context.getSystemService(NotificationManager.class);
         nm.notify(0, builder.build());

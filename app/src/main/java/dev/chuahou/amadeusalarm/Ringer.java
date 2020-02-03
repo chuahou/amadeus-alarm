@@ -5,6 +5,7 @@ import android.media.AudioAttributes;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.util.Log;
 
 public class Ringer
 {
@@ -26,7 +27,7 @@ public class Ringer
 
     private void _getRingtone(Context context)
     {
-        if (_r != null) return;
+        if (_r != null) _r.stop();
         Uri path = Uri.parse("android.resource://dev.chuahou.amadeusalarm/" +
                 R.raw.ringtone_beginning_of_fight);
         _r = RingtoneManager.getRingtone(context, path);
@@ -43,6 +44,7 @@ public class Ringer
     {
         _getRingtone(context);
         _r.play();
+        Log.d("RINGER", "START");
     }
 
     /**
@@ -52,14 +54,6 @@ public class Ringer
     {
         if (_r != null)
             _r.stop();
-    }
-
-    /**
-     * Returns true if is currently ringing.
-     * @return whether it is currently ringing
-     */
-    public boolean isRinging()
-    {
-        return _r != null && _r.isPlaying();
+        Log.d("RINGER", "STOP");
     }
 }

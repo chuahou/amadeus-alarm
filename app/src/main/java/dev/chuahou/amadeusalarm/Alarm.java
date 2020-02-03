@@ -28,6 +28,11 @@ public class Alarm
     private Alarm() {}
 
     /**
+     * Whether the alarm is currently ringing.
+     */
+    public boolean ringing = false;
+
+    /**
      * Shared preferences to maintain set alarm state.
      */
     private SharedPreferences _sp = null;
@@ -67,6 +72,8 @@ public class Alarm
     {
         Log.d("ALARM", "SET");
 
+        ringing = false;
+
         _updateSp(context);
         long timeInMillis;
         if (time == null)
@@ -101,7 +108,7 @@ public class Alarm
             NotificationChannel nc = new NotificationChannel(
                     context.getString(R.string.nc2_id),
                     context.getString(R.string.nc2_name),
-                    NotificationManager.IMPORTANCE_HIGH
+                    NotificationManager.IMPORTANCE_DEFAULT
             );
             nc.setDescription(context.getString(R.string.nc2_desc));
             nc.setSound(null, null);
@@ -120,7 +127,8 @@ public class Alarm
                                     R.string.status_on))
                             .setAutoCancel(false)
                             .setOngoing(true)
-                            .setFullScreenIntent(pi, true);
+                            .setFullScreenIntent(pi, true)
+                            .setCategory(Notification.CATEGORY_PROGRESS);
             NotificationManager nm =
                     context.getSystemService(NotificationManager.class);
             nm.notify(1, builder.build());

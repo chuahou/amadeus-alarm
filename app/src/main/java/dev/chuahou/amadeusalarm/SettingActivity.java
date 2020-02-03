@@ -1,6 +1,7 @@
 package dev.chuahou.amadeusalarm;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -45,15 +46,6 @@ public class SettingActivity extends Activity
         }
     }
 
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-
-        // failsafe stop
-        Ringer.getInstance().stop();
-    }
-
     /**
      * Handles turn alarm on button clicked.
      * @param view
@@ -92,6 +84,9 @@ public class SettingActivity extends Activity
 
         // cancel alarm
         Alarm.getInstance().cancel(this);
+        NotificationManager nm = getSystemService(NotificationManager.class);
+        nm.cancel(0);
+        nm.cancel(1);
 
         // update text
         _text.setText(R.string.status_off);
