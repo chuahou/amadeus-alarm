@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.KeyguardManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 
 public class DoneActivity extends Activity
 {
@@ -23,30 +25,16 @@ public class DoneActivity extends Activity
             km.requestDismissKeyguard(this, null);
         }
 
-        // wait and quit
-        final int duration =
-                getResources().getInteger(R.integer.ms_before_quit);
-        Log.d("DONE", "WAITING");
-        Thread thread = new Thread()
-        {
-            @Override
-            public void run()
-            {
-                try
+        // wait for click to quit
+        findViewById(R.id.sg_divergence).setOnClickListener(
+                new View.OnClickListener()
                 {
-                    synchronized (this)
+                    @Override
+                    public void onClick(View v)
                     {
-                        wait(duration);
-                        DoneActivity.this.finish();
+                        finish();
                     }
                 }
-                catch (InterruptedException e)
-                {
-                    Log.e("DONE", "INTERRUPTEDEXCEPTION");
-                    DoneActivity.this.finish(); // quit immediately
-                }
-            }
-        };
-        thread.start();
+        );
     }
 }
