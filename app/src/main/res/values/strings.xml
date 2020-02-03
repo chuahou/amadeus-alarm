@@ -30,4 +30,5 @@
     <!-- Miscellaneous -->
     <string name="unset">nullpo</string>
     <string name="sg_desc">Steins;Gate worldline divergence</string>
+    <string name="kurisu_desc">Worried Kurisu</string>
 </resources>

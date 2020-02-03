@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".DoneActivity"></activity>
+        <activity android:name=".SnoozeActivity"></activity>
+        <activity android:name=".DoneActivity" />
 
         <receiver
             android:name=".Receiver"
