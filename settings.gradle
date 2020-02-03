@@ -1,2 +1,2 @@
-include ':app'
+include ':amadeus-alarm'
 rootProject.name='Amadeus Alarm'
