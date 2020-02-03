@@ -25,16 +25,30 @@ public class DoneActivity extends Activity
             km.requestDismissKeyguard(this, null);
         }
 
-        // wait for click to quit
-        findViewById(R.id.sg_divergence).setOnClickListener(
-                new View.OnClickListener()
+        // wait and quit
+        final int duration =
+                getResources().getInteger(R.integer.ms_before_quit);
+        Log.d("DONE", "WAITING");
+        Thread thread = new Thread()
+        {
+            @Override
+            public void run()
+            {
+                try
                 {
-                    @Override
-                    public void onClick(View v)
+                    synchronized (this)
                     {
-                        finish();
+                        wait(duration);
+                        DoneActivity.this.finish();
                     }
                 }
-        );
+                catch (InterruptedException e)
+                {
+                    Log.e("DONE", "INTERRUPTEDEXCEPTION");
+                    DoneActivity.this.finish(); // quit immediately
+                }
+            }
+        };
+        thread.start();
     }
 }
