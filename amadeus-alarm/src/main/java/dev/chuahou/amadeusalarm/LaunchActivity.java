@@ -15,8 +15,79 @@ import dev.chuahou.amadeusalarm.alarm.Alarm;
 
 public class LaunchActivity extends Activity
 {
-    private TextView _text;
     private MediaPlayer _mp;
+
+    private enum _State { CONNECT_TO, CONNECTING, DISCONNECTED, CALL }
+    private class _Status
+    {
+        private _State _state;
+        void setState(_State state)
+        {
+            TextView text = findViewById(R.id.launch_text);
+
+            _state = state;
+
+            switch (_state)
+            {
+                case CONNECT_TO:
+                    text.setText(R.string.connect_to_kurisu);
+                    break;
+                case CONNECTING:
+                    text.setText(R.string.connecting);
+                    _connect();
+                    break;
+                case DISCONNECTED:
+                    text.setText(R.string.disconnected);
+                    break;
+                case CALL:
+                    text.setText(R.string.call_from_kurisu);
+                    break;
+            }
+        }
+        _State getState()
+        {
+            return _state;
+        }
+
+        /**
+         * Starts connecting sequence and transitions to SettingActivity.
+         */
+        private void _connect()
+        {
+            Log.d("LAUNCH", "CONNECTING");
+            _setButtonsEnabled(false);
+
+            // play tone
+            _mp = MediaPlayer.create(LaunchActivity.this, R.raw.tone);
+            _mp.setOnCompletionListener(
+                    new MediaPlayer.OnCompletionListener()
+                    {
+                        @Override
+                        public void onCompletion(MediaPlayer mp)
+                        {
+                            mp.release();
+                            startActivity(new Intent(LaunchActivity.this,
+                                    SettingActivity.class));
+                        }
+                    }
+            );
+            _mp.setOnPreparedListener(
+                    new MediaPlayer.OnPreparedListener()
+                    {
+                        @Override
+                        public void onPrepared(MediaPlayer mp)
+                        {
+                            mp.start();
+                        }
+                    }
+            );
+        }
+    }
+
+    /**
+     * Current status of the activity (mainly changes text).
+     */
+    private _Status _status = new _Status();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -24,13 +95,10 @@ public class LaunchActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
 
-        // get text view
-        _text = findViewById(R.id.launch_text);
-
         // set alarm text and show over lock screen
         if (Alarm.getInstance().isRinging())
         {
-            _text.setText(R.string.call_from_kurisu);
+            _status.setState(_State.CALL);
 
             // show above lock screen
             setTurnScreenOn(true);
@@ -45,7 +113,7 @@ public class LaunchActivity extends Activity
         // set launch text
         else
         {
-            _text.setText(R.string.connect_to_kurisu);
+            _status.setState(_State.CONNECT_TO);
         }
     }
 
@@ -68,9 +136,9 @@ public class LaunchActivity extends Activity
         _setButtonsEnabled(true);
 
         // if just finished setting, set to disconnected
-        if (_text.getText().equals(getString(R.string.connecting)))
+        if (_status.getState() == _State.CONNECTING)
         {
-            _text.setText(R.string.disconnected);
+            _status.setState(_State.DISCONNECTED);
         }
     }
 
@@ -113,7 +181,7 @@ public class LaunchActivity extends Activity
         else
         {
             // start connecting
-            _connect();
+            _status.setState(_State.CONNECTING);
         }
     }
 
@@ -156,41 +224,6 @@ public class LaunchActivity extends Activity
             connect.setImageDrawable(getDrawable(R.drawable.connect_unselect));
             cancel.setImageDrawable(getDrawable(R.drawable.cancel_unselect));
         }
-    }
-
-    /**
-     * Starts connecting sequence and transitions to SettingActivity.
-     */
-    private void _connect()
-    {
-        Log.d("LAUNCH", "CONNECTING");
-        _text.setText(R.string.connecting);
-        _setButtonsEnabled(false);
-
-        // play tone
-        _mp = MediaPlayer.create(this, R.raw.tone);
-        _mp.setOnCompletionListener(
-                new MediaPlayer.OnCompletionListener()
-                {
-                    @Override
-                    public void onCompletion(MediaPlayer mp)
-                    {
-                        mp.release();
-                        startActivity(new Intent(LaunchActivity.this,
-                                SettingActivity.class));
-                    }
-                }
-        );
-        _mp.setOnPreparedListener(
-                new MediaPlayer.OnPreparedListener()
-                {
-                    @Override
-                    public void onPrepared(MediaPlayer mp)
-                    {
-                        mp.start();
-                    }
-                }
-        );
     }
 }
 
