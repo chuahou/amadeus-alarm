@@ -285,7 +285,7 @@ class AnimationRunnable implements Runnable
      * @param logo logo ImageView
      * @param handler Handler to schedule frames
      */
-    public AnimationRunnable(
+    AnimationRunnable(
             Context context, ImageView logo, Handler handler)
     {
         _context = context;
