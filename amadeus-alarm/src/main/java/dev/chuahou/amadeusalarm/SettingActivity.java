@@ -87,6 +87,7 @@ public class SettingActivity extends Activity
         NotificationManager nm = getSystemService(NotificationManager.class);
         nm.cancel(0);
         nm.cancel(1);
+        Alarm.getInstance().ringing = false;
 
         // update text
         _text.setText(R.string.status_off);

@@ -161,6 +161,7 @@ public class LaunchActivity extends Activity
 
         // remove alarm
         Alarm.getInstance().cancel(this);
+        Alarm.getInstance().ringing = false;
 
         // reset status
         _initialLaunch();
