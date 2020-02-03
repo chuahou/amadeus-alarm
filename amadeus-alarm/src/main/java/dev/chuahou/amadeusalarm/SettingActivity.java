@@ -1,5 +1,6 @@
 package dev.chuahou.amadeusalarm;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ public class SettingActivity extends Activity
     private TextView _text;
     private TimePicker _picker;
 
+    @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat _fmt = new SimpleDateFormat("MM-dd HH:mm");
 
     @Override

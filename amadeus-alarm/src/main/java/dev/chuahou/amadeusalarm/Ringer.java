@@ -7,7 +7,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.util.Log;
 
-public class Ringer
+class Ringer
 {
     private static Ringer _instance = null;
 
@@ -15,7 +15,7 @@ public class Ringer
      * Returns the singleton Ringer instance.
      * @return the singleton Ringer instance
      */
-    public static Ringer getInstance()
+    static Ringer getInstance()
     {
         if (_instance == null) _instance = new Ringer();
         return _instance;
@@ -40,7 +40,7 @@ public class Ringer
      * Starts ringing.
      * @param context
      */
-    public void start(Context context)
+    void start(Context context)
     {
         _getRingtone(context);
         _r.play();
@@ -50,7 +50,7 @@ public class Ringer
     /**
      * Stops ringing.
      */
-    public void stop()
+    void stop()
     {
         if (_r != null)
             _r.stop();
