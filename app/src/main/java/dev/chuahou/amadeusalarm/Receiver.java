@@ -51,6 +51,7 @@ public class Receiver extends BroadcastReceiver
                 NotificationManager.IMPORTANCE_HIGH
         );
         nc.setDescription(context.getString(R.string.nc_desc));
+        nc.setSound(null, null);
         NotificationManager notificationManager =
                 context.getSystemService(NotificationManager.class);
         notificationManager.createNotificationChannel(nc);
