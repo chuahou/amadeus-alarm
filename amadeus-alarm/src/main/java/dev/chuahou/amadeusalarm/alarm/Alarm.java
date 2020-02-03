@@ -92,7 +92,7 @@ public class Alarm
         // time is null, cancel alarm
         if (time == null)
         {
-            cancelAlarm(context);
+            stopAlarm(context);
             return;
         }
 
@@ -110,6 +110,7 @@ public class Alarm
      *
      * @param context application context
      */
+    @SuppressLint("ApplySharedPref")
     public void stopAlarm(Context context)
     {
         // stops ringing
@@ -120,6 +121,12 @@ public class Alarm
         _postAlarmNotification(context, null, false);
         _postAlarmSetNotification(context, false);
         _postRingingNotification(context, false);
+
+        // remove set alarm
+        SharedPreferences.Editor editor = context.getSharedPreferences(
+                _spName, Context.MODE_PRIVATE).edit();
+        editor.putLong(_spTimeLong, -1L);
+        editor.commit();
     }
 
     /**
@@ -135,24 +142,6 @@ public class Alarm
 
         // sends notification
         _postRingingNotification(context, true);
-    }
-
-    /**
-     * Cancels set alarm.
-     *
-     * @param context application context
-     */
-    @SuppressLint("ApplySharedPref")
-    public void cancelAlarm(Context context)
-    {
-        // stop any currently ringing alarm
-        stopAlarm(context);
-
-        // remove set alarm
-        SharedPreferences.Editor editor = context.getSharedPreferences(
-                _spName, Context.MODE_PRIVATE).edit();
-        editor.putLong(_spTimeLong, -1L);
-        editor.commit();
     }
 
     /**

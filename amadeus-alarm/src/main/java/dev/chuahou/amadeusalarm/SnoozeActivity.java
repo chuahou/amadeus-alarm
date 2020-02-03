@@ -22,7 +22,7 @@ public class SnoozeActivity extends Activity
         setShowWhenLocked(true);
         KeyguardManager km =
                 (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
-        if (km != null && km.isKeyguardLocked())
+        if (km != null)
         {
             km.requestDismissKeyguard(this, null);
         }

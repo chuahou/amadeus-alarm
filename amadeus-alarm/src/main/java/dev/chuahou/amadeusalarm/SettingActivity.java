@@ -86,7 +86,7 @@ public class SettingActivity extends Activity
         Log.d("SETTING", "OFF");
 
         // cancel alarm
-        Alarm.getInstance().cancelAlarm(this);
+        Alarm.getInstance().stopAlarm(this);
 
         // update text
         _text.setText(R.string.status_off);
