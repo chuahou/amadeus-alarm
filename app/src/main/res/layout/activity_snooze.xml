@@ -15,7 +15,7 @@
         android:scaleX="0.8"
         android:scaleY="0.8"
         android:src="@drawable/kurisu_sided_worried1"
-        android:translationY="150"
+        android:translationY="150dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -99,9 +99,7 @@ public class Alarm
                             != PackageManager.PERMISSION_GRANTED))
                 Log.e("ERROR", "NO PERMISSIONS");
 
-            PendingIntent pi = PendingIntent.getBroadcast(
-                    _context, 0, new Intent(_context, Receiver.class), 0
-            );
+            PendingIntent pi = _getAmPendingIntent();
             AlarmManager am =
                     (AlarmManager) _context.getSystemService(ALARM_SERVICE);
             am.set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), pi);
@@ -136,9 +134,7 @@ public class Alarm
         }
         else
         {
-            PendingIntent pi = PendingIntent.getBroadcast(
-                    _context, 0, new Intent(_context, Receiver.class), 0
-            );
+            PendingIntent pi = _getAmPendingIntent();
             AlarmManager am =
                     (AlarmManager) _context.getSystemService(ALARM_SERVICE);
             am.cancel(pi);
@@ -146,6 +142,17 @@ public class Alarm
                     _context.getSystemService(NotificationManager.class);
             nm.cancel(1);
         }
+    }
+
+    /**
+     * Returns the pending intent used for AlarmManager.
+     * @return pending intent used for AlarmManager
+     */
+    private PendingIntent _getAmPendingIntent()
+    {
+        return PendingIntent.getBroadcast(
+                _context, 0, new Intent(_context, Receiver.class), 0
+        );
     }
 
     /**
