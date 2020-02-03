@@ -31,7 +31,7 @@ public class SettingActivity extends Activity
         _picker.setIs24HourView(true);
 
         // Set time picker to currently set alarm time
-        Calendar alarmTime = Alarm.getInstance(this).getAlarmTime();
+        Calendar alarmTime = Alarm.getInstance().getAlarmTime(this);
         if (alarmTime == null)
         {
             _text.setText(R.string.status_off);
@@ -75,7 +75,7 @@ public class SettingActivity extends Activity
         }
 
         // set alarm
-        Alarm.getInstance(this).setAlarmTime(time);
+        Alarm.getInstance().setAlarmTime(time, this);
 
         // update text
         _text.setText(R.string.status_on);
@@ -91,7 +91,7 @@ public class SettingActivity extends Activity
         Log.d("SETTING", "OFF");
 
         // cancel alarm
-        Alarm.getInstance(this).cancel();
+        Alarm.getInstance().cancel(this);
 
         // update text
         _text.setText(R.string.status_off);

@@ -25,10 +25,7 @@ public class Alarm
     private static final String _spTimeLong = "alarmTime";
 
     private static Alarm _instance = null;
-    private Alarm(Context context)
-    {
-        _context = context;
-    }
+    private Alarm() {}
 
     /**
      * Shared preferences to maintain set alarm state.
@@ -36,17 +33,12 @@ public class Alarm
     private SharedPreferences _sp = null;
 
     /**
-     * Current application context.
-     */
-    private Context _context;
-
-    /**
      * Updates shared preferences if required.
      */
-    private void _updateSp()
+    private void _updateSp(Context context)
     {
         Log.d("ALARM", "UPDATE SP");
-        _sp = _context.getSharedPreferences(_spName, Context.MODE_PRIVATE);
+        _sp = context.getSharedPreferences(_spName, Context.MODE_PRIVATE);
     }
 
     /**
@@ -54,12 +46,12 @@ public class Alarm
      *
      * @return current set alarm time, null if not set
      */
-    public Calendar getAlarmTime()
+    public Calendar getAlarmTime(Context context)
     {
         Log.d("ALARM", "GET");
 
-        _updateSp();
-        Long timeInMillis = _sp.getLong(_spTimeLong, -1L);
+        _updateSp(context);
+        long timeInMillis = _sp.getLong(_spTimeLong, -1L);
         if (timeInMillis < 0L) return null;
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(timeInMillis);
@@ -71,12 +63,12 @@ public class Alarm
      *
      * @param time time to set alarm to
      */
-    public void setAlarmTime(Calendar time)
+    public void setAlarmTime(Calendar time, Context context)
     {
         Log.d("ALARM", "SET");
 
-        _updateSp();
-        Long timeInMillis;
+        _updateSp(context);
+        long timeInMillis;
         if (time == null)
         {
             timeInMillis = -1L;
@@ -92,54 +84,54 @@ public class Alarm
         if (time != null)
         {
             // get permissions
-            if ((_context.checkSelfPermission(Manifest.permission.WAKE_LOCK)
+            if ((context.checkSelfPermission(Manifest.permission.WAKE_LOCK)
                     != PackageManager.PERMISSION_GRANTED) ||
-                (_context.checkSelfPermission(
+                (context.checkSelfPermission(
                         Manifest.permission.USE_FULL_SCREEN_INTENT)
                             != PackageManager.PERMISSION_GRANTED))
                 Log.e("ERROR", "NO PERMISSIONS");
 
-            PendingIntent pi = _getAmPendingIntent();
+            PendingIntent pi = _getAmPendingIntent(context);
             AlarmManager am =
-                    (AlarmManager) _context.getSystemService(ALARM_SERVICE);
+                    (AlarmManager) context.getSystemService(ALARM_SERVICE);
             am.set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), pi);
 
             // set alarm notification channel
             NotificationChannel nc = new NotificationChannel(
-                    _context.getString(R.string.nc2_id),
-                    _context.getString(R.string.nc2_name),
+                    context.getString(R.string.nc2_id),
+                    context.getString(R.string.nc2_name),
                     NotificationManager.IMPORTANCE_HIGH
             );
-            nc.setDescription(_context.getString(R.string.nc2_desc));
+            nc.setDescription(context.getString(R.string.nc2_desc));
             nc.setSound(null, null);
             NotificationManager notificationManager =
-                    _context.getSystemService(NotificationManager.class);
+                    context.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(nc);
 
             // set alarm notification
-            Intent i = new Intent(_context, LaunchActivity.class);
-            PendingIntent pi2 = PendingIntent.getActivity(_context, 0, i, 0);
+            Intent i = new Intent(context, LaunchActivity.class);
+            PendingIntent pi2 = PendingIntent.getActivity(context, 0, i, 0);
             Notification.Builder builder =
-                    new Notification.Builder(_context,
-                            _context.getString(R.string.nc2_id))
+                    new Notification.Builder(context,
+                            context.getString(R.string.nc2_id))
                             .setSmallIcon(R.drawable.xp2)
-                            .setContentTitle(_context.getString(
+                            .setContentTitle(context.getString(
                                     R.string.status_on))
                             .setAutoCancel(false)
                             .setOngoing(true)
                             .setFullScreenIntent(pi, true);
             NotificationManager nm =
-                    _context.getSystemService(NotificationManager.class);
+                    context.getSystemService(NotificationManager.class);
             nm.notify(1, builder.build());
         }
         else
         {
-            PendingIntent pi = _getAmPendingIntent();
+            PendingIntent pi = _getAmPendingIntent(context);
             AlarmManager am =
-                    (AlarmManager) _context.getSystemService(ALARM_SERVICE);
+                    (AlarmManager) context.getSystemService(ALARM_SERVICE);
             am.cancel(pi);
             NotificationManager nm =
-                    _context.getSystemService(NotificationManager.class);
+                    context.getSystemService(NotificationManager.class);
             nm.cancel(1);
         }
     }
@@ -148,29 +140,29 @@ public class Alarm
      * Returns the pending intent used for AlarmManager.
      * @return pending intent used for AlarmManager
      */
-    private PendingIntent _getAmPendingIntent()
+    private PendingIntent _getAmPendingIntent(Context context)
     {
         return PendingIntent.getBroadcast(
-                _context, 0, new Intent(_context, Receiver.class), 0
+                context, 0, new Intent(context, Receiver.class), 0
         );
     }
 
     /**
      * Cancels alarm.
      */
-    public void cancel()
+    public void cancel(Context context)
     {
         Log.d("ALARM", "CANCEL");
 
-        setAlarmTime(null);
+        setAlarmTime(null, context);
     }
 
     /**
      * Returns the singleton instance of the alarm.
      */
-    public static Alarm getInstance(Context context)
+    public static Alarm getInstance()
     {
-        if (_instance == null) _instance = new Alarm(context);
+        if (_instance == null) _instance = new Alarm();
         return _instance;
     }
 }

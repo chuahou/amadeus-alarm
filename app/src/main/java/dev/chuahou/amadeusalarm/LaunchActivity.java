@@ -38,11 +38,11 @@ public class LaunchActivity extends Activity
         // this is alarm
         if (Ringer.getInstance().isRinging())
         {
-            setStatusAlarm();
+            _alarm();
         }
         else
         {
-            setStatusLaunch();
+            _initialLaunch();
         }
 
         // start animation
@@ -71,7 +71,7 @@ public class LaunchActivity extends Activity
                         else
                         {
                             // set status
-                            setStatusConnecting();
+                            _connect();
                         }
                     }
                 }
@@ -105,7 +105,7 @@ public class LaunchActivity extends Activity
 
         // if just finished setting, set to disconnected
         if (_status == Status.STATUS_CONNECTING)
-            setStatusDisconnected();
+            _disconnect();
     }
 
     @Override
@@ -160,16 +160,16 @@ public class LaunchActivity extends Activity
         nm.cancel(1);
 
         // remove alarm
-        Alarm.getInstance(this).cancel();
+        Alarm.getInstance().cancel(this);
 
         // reset status
-        setStatusLaunch();
+        _initialLaunch();
     }
 
     /**
      * Set status to initial launch.
      */
-    public void setStatusLaunch()
+    private void _initialLaunch()
     {
         Log.d("STATUS", "LAUNCH");
         _status = Status.STATUS_LAUNCH;
@@ -180,7 +180,7 @@ public class LaunchActivity extends Activity
     /**
      * Set status to connecting.
      */
-    public void setStatusConnecting()
+    private void _connect()
     {
         Log.d("STATUS", "CONNECTING");
         _status = Status.STATUS_CONNECTING;
@@ -216,10 +216,10 @@ public class LaunchActivity extends Activity
     /**
      * Set status to disconnected.
      */
-    public void setStatusDisconnected()
+    private void _disconnect()
     {
         Log.d("STATUS", "DISCONNECTED");
-        setStatusLaunch();
+        _initialLaunch();
         _text.setText(R.string.disconnected);
         _status = Status.STATUS_DISCONNECT;
     }
@@ -227,7 +227,7 @@ public class LaunchActivity extends Activity
     /**
      * Set status to alarm ringing.
      */
-    public void setStatusAlarm()
+    private void _alarm()
     {
         Log.d("STATUS", "ALARM");
         _setButtonsEnabled(true);
@@ -271,9 +271,9 @@ public class LaunchActivity extends Activity
  */
 class AnimationRunnable implements Runnable
 {
-    private Context _context; // application context
-    private ImageView _logo; // logo ImageView
-    private Handler _handler; // Handler to schedule frames
+    private final Context _context; // application context
+    private final ImageView _logo; // logo ImageView
+    private final Handler _handler; // Handler to schedule frames
     private int _i = 1; // iterator through frames
     private final int _frames; // total number of frames
     private final int _timeBetweenFrames; // time between frames for Handler
