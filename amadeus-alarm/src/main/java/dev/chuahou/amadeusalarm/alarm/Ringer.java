@@ -1,4 +1,4 @@
-package dev.chuahou.amadeusalarm;
+package dev.chuahou.amadeusalarm.alarm;
 
 import android.content.Context;
 import android.media.AudioAttributes;
@@ -6,6 +6,8 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.util.Log;
+
+import dev.chuahou.amadeusalarm.R;
 
 class Ringer
 {
@@ -38,7 +40,7 @@ class Ringer
 
     /**
      * Starts ringing.
-     * @param context
+     * @param context application context
      */
     void start(Context context)
     {

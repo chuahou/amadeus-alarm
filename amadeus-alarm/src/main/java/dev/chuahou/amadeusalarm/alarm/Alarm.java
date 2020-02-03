@@ -1,4 +1,4 @@
-package dev.chuahou.amadeusalarm;
+package dev.chuahou.amadeusalarm.alarm;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -15,12 +15,17 @@ import android.util.Log;
 
 import java.util.Calendar;
 
+import dev.chuahou.amadeusalarm.Ids;
+import dev.chuahou.amadeusalarm.LaunchActivity;
+import dev.chuahou.amadeusalarm.R;
+import dev.chuahou.amadeusalarm.Receiver;
+
 import static android.content.Context.ALARM_SERVICE;
 
 /**
  * Implementation of model of the alarm.
  */
-class Alarm
+public class Alarm
 {
     // shared preferences IDs
     private static final String _spName = "AmadeusSP";
@@ -29,7 +34,7 @@ class Alarm
     // singleton pattern
     private static Alarm _instance = null;
     private Alarm() {}
-    static Alarm getInstance()
+    public static Alarm getInstance()
     {
         if (_instance == null) _instance = new Alarm();
         return _instance;
@@ -44,7 +49,7 @@ class Alarm
      * @param context application context
      * @return currently set alarm time
      */
-    Calendar getAlarmTime(Context context)
+    public Calendar getAlarmTime(Context context)
     {
         Log.d("ALARM", "GET");
 
@@ -64,13 +69,12 @@ class Alarm
 
     /**
      * Sets alarm time. Cancels alarm if time is null.
-     *
-     * @param context application context
+     *  @param context application context
      * @param time time to set alarm to
      */
     @SuppressLint("ApplySharedPref")
-        // commit() to ensure alarm is set immediately
-    void setAlarmTime(Context context, Calendar time)
+    // commit() to ensure alarm is set immediately
+    public void setAlarmTime(Context context, Calendar time)
     {
         Log.d("ALARM", "SET");
 
@@ -103,7 +107,7 @@ class Alarm
      *
      * @param context application context
      */
-    void stopAlarm(Context context)
+    public void stopAlarm(Context context)
     {
         // stops ringing
         _ringing = false;
@@ -120,7 +124,7 @@ class Alarm
      *
      * @param context application context
      */
-    void startAlarm(Context context)
+    public void startAlarm(Context context)
     {
         // starts ringing
         _ringing = true;
@@ -135,7 +139,7 @@ class Alarm
      *
      * @param context application context
      */
-    void cancelAlarm(Context context)
+    public void cancelAlarm(Context context)
     {
         // stop any currently ringing alarm
         stopAlarm(context);
@@ -146,7 +150,7 @@ class Alarm
      *
      * @return true if alarm is ringing
      */
-    boolean isRinging() { return _ringing; }
+    public boolean isRinging() { return _ringing; }
 
     /**
      * Posts/cancels alarm ringing notification with full screen intent.

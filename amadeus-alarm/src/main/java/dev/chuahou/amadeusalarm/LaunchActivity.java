@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import dev.chuahou.amadeusalarm.alarm.Alarm;
+
 public class LaunchActivity extends Activity
 {
     private TextView _text;

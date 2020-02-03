@@ -11,6 +11,8 @@ import android.widget.TimePicker;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import dev.chuahou.amadeusalarm.alarm.Alarm;
+
 public class SettingActivity extends Activity
 {
     private TextView _text;

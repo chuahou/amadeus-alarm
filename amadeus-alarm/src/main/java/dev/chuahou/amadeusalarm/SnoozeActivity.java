@@ -7,6 +7,8 @@ import android.util.Log;
 
 import java.util.Calendar;
 
+import dev.chuahou.amadeusalarm.alarm.Alarm;
+
 public class SnoozeActivity extends Activity
 {
     @Override
