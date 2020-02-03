@@ -20,9 +20,12 @@
     <string name="status_off">Alarm turned off</string>
 
     <!-- Notification channel -->
-    <string name="nc_id">NCID</string>
-    <string name="nc_name">NCName</string>
+    <string name="nc_id">nc_alarm</string>
+    <string name="nc_name">Alarm</string>
     <string name="nc_desc">Notification channel for alarms</string>
+    <string name="nc2_id">nc_notif</string>
+    <string name="nc2_name">Notifications</string>
+    <string name="nc2_desc">General notification channel</string>
 
     <string name="unset">nullpo</string>
 </resources>

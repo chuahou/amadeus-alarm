@@ -2,6 +2,9 @@ package dev.chuahou.amadeusalarm;
 
 import android.Manifest;
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -103,6 +106,34 @@ public class Alarm
                     (AlarmManager) _context.getSystemService(ALARM_SERVICE);
 //            am.set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), pi);
             am.set(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + 1500, pi);
+
+            // set alarm notification channel
+            NotificationChannel nc = new NotificationChannel(
+                    _context.getString(R.string.nc2_id),
+                    _context.getString(R.string.nc2_name),
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            nc.setDescription(_context.getString(R.string.nc2_desc));
+            nc.setSound(null, null);
+            NotificationManager notificationManager =
+                    _context.getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(nc);
+
+            // set alarm notification
+            Intent i = new Intent(_context, LaunchActivity.class);
+            PendingIntent pi2 = PendingIntent.getActivity(_context, 0, i, 0);
+            Notification.Builder builder =
+                    new Notification.Builder(_context,
+                            _context.getString(R.string.nc2_id))
+                            .setSmallIcon(R.drawable.xp2)
+                            .setContentTitle(_context.getString(
+                                    R.string.status_on))
+                            .setAutoCancel(false)
+                            .setOngoing(true)
+                            .setFullScreenIntent(pi, true);
+            NotificationManager nm =
+                    _context.getSystemService(NotificationManager.class);
+            nm.notify(1, builder.build());
         }
         else
         {
@@ -112,6 +143,9 @@ public class Alarm
             AlarmManager am =
                     (AlarmManager) _context.getSystemService(ALARM_SERVICE);
             am.cancel(pi);
+            NotificationManager nm =
+                    _context.getSystemService(NotificationManager.class);
+            nm.cancel(1);
         }
     }
 

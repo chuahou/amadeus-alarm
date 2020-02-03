@@ -2,6 +2,7 @@ package dev.chuahou.amadeusalarm;
 
 import android.app.Activity;
 import android.app.KeyguardManager;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -65,9 +66,6 @@ public class LaunchActivity extends Activity
                         // handle if alarm
                         if (_status == Status.STATUS_ALARM)
                         {
-                            Ringer.getInstance().stop();
-
-                            setStatusLaunch();
                             _alarmEnded();
                         }
                         else
@@ -93,9 +91,6 @@ public class LaunchActivity extends Activity
                         // highlight button
                         ((ImageView) view).setImageDrawable(
                                 getDrawable(R.drawable.cancel_select));
-
-                        // stop ringing
-                        Ringer.getInstance().stop();
 
                         _alarmSnoozed();
                     }
@@ -124,12 +119,36 @@ public class LaunchActivity extends Activity
 
     private void _alarmEnded()
     {
+        _killAlarm();
 
+        // TODO: Rest of activities
     }
 
     private void _alarmSnoozed()
     {
+        _killAlarm();
 
+        // TODO: Rest of activities
+    }
+
+    /**
+     * Kills currently ringing alarm.
+     */
+    private void _killAlarm()
+    {
+        // stop ringing
+        Ringer.getInstance().stop();
+
+        // kill notifications
+        NotificationManager nm = getSystemService(NotificationManager.class);
+        nm.cancel(0);
+        nm.cancel(1);
+
+        // remove alarm
+        Alarm.getInstance(this).cancel();
+
+        // reset status
+        setStatusLaunch();
     }
 
     /**
