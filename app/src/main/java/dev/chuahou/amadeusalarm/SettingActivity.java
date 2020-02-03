@@ -2,6 +2,7 @@ package dev.chuahou.amadeusalarm;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -50,6 +51,8 @@ public class SettingActivity extends Activity
      */
     public void onOnClicked(View view)
     {
+        Log.d("SETTING", "ON");
+
         // get desired time
         Calendar time = Calendar.getInstance();
         time.set(Calendar.HOUR_OF_DAY, _picker.getHour());
@@ -76,6 +79,8 @@ public class SettingActivity extends Activity
      */
     public void onOffClicked(View view)
     {
+        Log.d("SETTING", "OFF");
+
         // cancel alarm
         Alarm.getInstance(this).cancel();
 
