@@ -107,9 +107,13 @@ public class LaunchActivity extends Activity
 
         // if not alarm exit
         if (!Alarm.getInstance().isRinging())
+        {
             finish();
+            return;
+        }
 
         // start SnoozeActivity
+        Alarm.getInstance().stopAlarm(this);
         ((ImageView) view).setImageDrawable(
                 getDrawable(R.drawable.cancel_select));
         Intent i = new Intent(this, SnoozeActivity.class);
