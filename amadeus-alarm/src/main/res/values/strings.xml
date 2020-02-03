@@ -19,6 +19,9 @@
     <string name="status_on">Alarm turned on</string>
     <string name="status_off">Alarm turned off</string>
 
+    <!-- SnoozeActivity -->
+    <string name="snooze_msg">Snoozed for 2 mins</string>
+
     <!-- Notification channel -->
     <string name="nc_id">nc_alarm</string>
     <string name="nc_name">Alarm</string>
