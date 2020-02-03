@@ -117,6 +117,13 @@ public class LaunchActivity extends Activity
         if (_mp != null) _mp.release();
     }
 
+    // Prevent leaving when in alarm state
+    @Override
+    public void onBackPressed()
+    {
+        if (_status != Status.STATUS_ALARM) super.onBackPressed();
+    }
+
     private void _alarmEnded()
     {
         _killAlarm();
