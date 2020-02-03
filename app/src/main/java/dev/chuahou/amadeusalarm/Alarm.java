@@ -1,10 +1,12 @@
 package dev.chuahou.amadeusalarm;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.util.Log;
 
 import java.util.Calendar;
@@ -86,6 +88,14 @@ public class Alarm
 
         if (time != null)
         {
+            // get permissions
+            if ((_context.checkSelfPermission(Manifest.permission.WAKE_LOCK)
+                    != PackageManager.PERMISSION_GRANTED) ||
+                (_context.checkSelfPermission(
+                        Manifest.permission.USE_FULL_SCREEN_INTENT)
+                            != PackageManager.PERMISSION_GRANTED))
+                Log.e("ERROR", "NO PERMISSIONS");
+
             PendingIntent pi = PendingIntent.getBroadcast(
                     _context, 0, new Intent(_context, Receiver.class), 0
             );
@@ -93,6 +103,15 @@ public class Alarm
                     (AlarmManager) _context.getSystemService(ALARM_SERVICE);
 //            am.set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), pi);
             am.set(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + 1500, pi);
+        }
+        else
+        {
+            PendingIntent pi = PendingIntent.getBroadcast(
+                    _context, 0, new Intent(_context, Receiver.class), 0
+            );
+            AlarmManager am =
+                    (AlarmManager) _context.getSystemService(ALARM_SERVICE);
+            am.cancel(pi);
         }
     }
 
@@ -104,13 +123,6 @@ public class Alarm
         Log.d("ALARM", "CANCEL");
 
         setAlarmTime(null);
-
-        PendingIntent pi = PendingIntent.getBroadcast(
-                _context, 0, new Intent(_context, Receiver.class), 0
-        );
-        AlarmManager am =
-                (AlarmManager) _context.getSystemService(ALARM_SERVICE);
-        am.cancel(pi);
     }
 
     /**

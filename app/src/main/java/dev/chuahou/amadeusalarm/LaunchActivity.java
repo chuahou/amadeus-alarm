@@ -1,8 +1,11 @@
 package dev.chuahou.amadeusalarm;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,6 +32,16 @@ public class LaunchActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
+
+        // set to draw over lock screen
+        setTurnScreenOn(true);
+        setShowWhenLocked(true);
+        KeyguardManager km =
+                (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+        if (km.isKeyguardLocked())
+        {
+            km.requestDismissKeyguard(this, null);
+        }
 
         // start animation
         ImageView logo = findViewById(R.id.launch_logo);
