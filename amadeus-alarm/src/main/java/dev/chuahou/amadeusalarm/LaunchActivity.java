@@ -1,6 +1,7 @@
 package dev.chuahou.amadeusalarm;
 
 import android.app.Activity;
+import android.app.KeyguardManager;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -26,10 +27,20 @@ public class LaunchActivity extends Activity
         // get text view
         _text = findViewById(R.id.launch_text);
 
-        // set alarm text
+        // set alarm text and show over lock screen
         if (Alarm.getInstance().isRinging())
         {
             _text.setText(R.string.call_from_kurisu);
+
+            // show above lock screen
+            setTurnScreenOn(true);
+            setShowWhenLocked(true);
+            KeyguardManager km =
+                    (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+            if (km.isKeyguardLocked())
+            {
+                km.requestDismissKeyguard(this, null);
+            }
         }
         // set launch text
         else
