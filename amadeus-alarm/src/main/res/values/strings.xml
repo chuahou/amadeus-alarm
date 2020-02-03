@@ -13,7 +13,6 @@
     <string name="call_from_kurisu">Call from Kurisu.</string>
 
     <!-- SettingActivity -->
-    <string name="settings">Alarm Settings</string>
     <string name="turn_on">Turn ON</string>
     <string name="turn_off">Turn OFF</string>
     <string name="status_on">Alarm turned on</string>

@@ -18,7 +18,7 @@ public class DoneActivity extends Activity
         setShowWhenLocked(true);
         KeyguardManager km =
                 (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
-        if (km.isKeyguardLocked())
+        if (km != null && km.isKeyguardLocked())
         {
             km.requestDismissKeyguard(this, null);
         }

@@ -142,7 +142,7 @@ public class Alarm
      *
      * @param context application context
      */
-    @SuppressLint("SharedPrefsApply")
+    @SuppressLint("ApplySharedPref")
     public void cancelAlarm(Context context)
     {
         // stop any currently ringing alarm
@@ -234,10 +234,6 @@ public class Alarm
             nc.setSound(null, null);
 
             // send notification
-            PendingIntent pi = PendingIntent.getActivity(
-                    context, Ids.RC_ALARM_SET, new Intent(),
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            );
             Notification.Builder builder =
                     new Notification.Builder(context,
                             context.getString(R.string.nc2_id))

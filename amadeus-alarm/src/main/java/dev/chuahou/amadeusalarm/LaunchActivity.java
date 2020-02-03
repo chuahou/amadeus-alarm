@@ -87,7 +87,7 @@ public class LaunchActivity extends Activity
     /**
      * Current status of the activity (mainly changes text).
      */
-    private _Status _status = new _Status();
+    private final _Status _status = new _Status();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -105,7 +105,7 @@ public class LaunchActivity extends Activity
             setShowWhenLocked(true);
             KeyguardManager km =
                     (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
-            if (km.isKeyguardLocked())
+            if (km != null && km.isKeyguardLocked())
             {
                 km.requestDismissKeyguard(this, null);
             }

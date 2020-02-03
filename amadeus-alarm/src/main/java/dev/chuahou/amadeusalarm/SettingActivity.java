@@ -53,7 +53,7 @@ public class SettingActivity extends Activity
      * Handles turn alarm on button clicked.
      * @param view clicked button
      */
-    public void onOnClicked(View view)
+    public void onOnClicked(@SuppressWarnings("unused") View view)
     {
         Log.d("SETTING", "ON");
 
@@ -81,7 +81,7 @@ public class SettingActivity extends Activity
      * Handles turn alarm off button clicked.
      * @param view clicked button
      */
-    public void onOffClicked(View view)
+    public void onOffClicked(@SuppressWarnings("unused") View view)
     {
         Log.d("SETTING", "OFF");
 
