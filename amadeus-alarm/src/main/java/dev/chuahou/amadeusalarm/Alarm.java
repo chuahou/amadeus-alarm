@@ -1,6 +1,7 @@
 package dev.chuahou.amadeusalarm;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -19,7 +20,7 @@ import static android.content.Context.ALARM_SERVICE;
 /**
  * Implementation of model of the alarm.
  */
-public class Alarm
+class Alarm
 {
     private static final String _spName = "AmadeusSP";
     private static final String _spTimeLong = "alarmTime";
@@ -30,7 +31,7 @@ public class Alarm
     /**
      * Whether the alarm is currently ringing.
      */
-    public boolean ringing = false;
+    boolean ringing = false;
 
     /**
      * Shared preferences to maintain set alarm state.
@@ -51,7 +52,7 @@ public class Alarm
      *
      * @return current set alarm time, null if not set
      */
-    public Calendar getAlarmTime(Context context)
+    Calendar getAlarmTime(Context context)
     {
         Log.d("ALARM", "GET");
 
@@ -68,7 +69,8 @@ public class Alarm
      *
      * @param time time to set alarm to
      */
-    public void setAlarmTime(Calendar time, Context context)
+    @SuppressLint("ApplySharedPref")
+    void setAlarmTime(Calendar time, Context context)
     {
         Log.d("ALARM", "SET");
 
@@ -159,7 +161,7 @@ public class Alarm
     /**
      * Cancels alarm.
      */
-    public void cancel(Context context)
+    void cancel(Context context)
     {
         Log.d("ALARM", "CANCEL");
 
@@ -169,7 +171,7 @@ public class Alarm
     /**
      * Returns the singleton instance of the alarm.
      */
-    public static Alarm getInstance()
+    static Alarm getInstance()
     {
         if (_instance == null) _instance = new Alarm();
         return _instance;
