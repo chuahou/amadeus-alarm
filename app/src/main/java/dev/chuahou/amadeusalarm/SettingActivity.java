@@ -45,6 +45,15 @@ public class SettingActivity extends Activity
         }
     }
 
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        // failsafe stop
+        Ringer.getInstance().stop();
+    }
+
     /**
      * Handles turn alarm on button clicked.
      * @param view

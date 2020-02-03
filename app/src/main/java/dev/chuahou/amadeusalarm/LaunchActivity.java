@@ -1,11 +1,9 @@
 package dev.chuahou.amadeusalarm;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -33,26 +31,23 @@ public class LaunchActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
 
-        // set to draw over lock screen
-        setTurnScreenOn(true);
-        setShowWhenLocked(true);
-        KeyguardManager km =
-                (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
-        if (km.isKeyguardLocked())
+        // get text view
+        _text = findViewById(R.id.launch_text);
+
+        // this is alarm
+        if (Ringer.getInstance().isRinging())
         {
-            km.requestDismissKeyguard(this, null);
+            setStatusAlarm();
+        }
+        else
+        {
+            setStatusLaunch();
         }
 
         // start animation
         ImageView logo = findViewById(R.id.launch_logo);
         Handler handler = new Handler();
         handler.post(new AnimationRunnable(this, logo, handler));
-
-        // get text view
-        _text = findViewById(R.id.launch_text);
-
-        // set initial state
-        setStatusLaunch();
 
         // add button listeners
         findViewById(R.id.launch_connect).setOnClickListener(
@@ -67,8 +62,19 @@ public class LaunchActivity extends Activity
                         ((ImageView) view).setImageDrawable(
                                 getDrawable(R.drawable.connect_select));
 
-                        // set status
-                        setStatusConnecting();
+                        // handle if alarm
+                        if (_status == Status.STATUS_ALARM)
+                        {
+                            Ringer.getInstance().stop();
+
+                            setStatusLaunch();
+                            _alarmEnded();
+                        }
+                        else
+                        {
+                            // set status
+                            setStatusConnecting();
+                        }
                     }
                 }
         );
@@ -87,6 +93,11 @@ public class LaunchActivity extends Activity
                         // highlight button
                         ((ImageView) view).setImageDrawable(
                                 getDrawable(R.drawable.cancel_select));
+
+                        // stop ringing
+                        Ringer.getInstance().stop();
+
+                        _alarmSnoozed();
                     }
                 }
         );
@@ -109,6 +120,16 @@ public class LaunchActivity extends Activity
 
         // release media player if necessary
         if (_mp != null) _mp.release();
+    }
+
+    private void _alarmEnded()
+    {
+
+    }
+
+    private void _alarmSnoozed()
+    {
+
     }
 
     /**
@@ -177,7 +198,17 @@ public class LaunchActivity extends Activity
         Log.d("STATUS", "ALARM");
         _setButtonsEnabled(true);
         _status = Status.STATUS_ALARM;
-        // TODO: to implement
+        _text.setText(R.string.call_from_kurisu);
+
+        // show above lock screen
+        setTurnScreenOn(true);
+        setShowWhenLocked(true);
+        KeyguardManager km =
+                (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+        if (km.isKeyguardLocked())
+        {
+            km.requestDismissKeyguard(this, null);
+        }
     }
 
     /**

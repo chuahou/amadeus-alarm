@@ -16,7 +16,8 @@ public class Receiver extends BroadcastReceiver
     {
         Log.d("RECEIVER", "RECEIVED");
 
-        // TODO: Ring alarm
+        // ring alarm
+        Ringer.getInstance().start(context);
 
         // create notification channel
         _createNotificationChannel(context);
