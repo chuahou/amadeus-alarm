@@ -118,16 +118,6 @@ public class LaunchActivity extends Activity
     }
 
     @Override
-    protected void onStart()
-    {
-        super.onStart();
-
-        // start animation
-        ImageView logo = findViewById(R.id.launch_logo);
-        ((AnimationDrawable) logo.getDrawable()).start();
-    }
-
-    @Override
     protected void onResume()
     {
         super.onResume();
@@ -139,6 +129,20 @@ public class LaunchActivity extends Activity
         if (_status.getState() == _State.CONNECTING)
         {
             _status.setState(_State.DISCONNECTED);
+        }
+
+        // get logo
+        ImageView logo = findViewById(R.id.launch_logo);
+
+        // start animation
+        Log.d("ANIMATION AT STATE", _status.getState().toString());
+        if (_status.getState() != _State.DISCONNECTED)
+        {
+            ((AnimationDrawable) logo.getDrawable()).start();
+        }
+        else
+        {
+            logo.setImageDrawable(getDrawable(R.drawable.logo39));
         }
     }
 
