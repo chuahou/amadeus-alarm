@@ -94,7 +94,8 @@ public class Alarm
             PendingIntent pi = _getAmPendingIntent(context);
             AlarmManager am =
                     (AlarmManager) context.getSystemService(ALARM_SERVICE);
-            am.set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), pi);
+            am.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), pi);
 
             // set alarm notification channel
             NotificationChannel nc = new NotificationChannel(
