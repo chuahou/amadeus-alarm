@@ -104,8 +104,7 @@ public class Alarm
             );
             AlarmManager am =
                     (AlarmManager) _context.getSystemService(ALARM_SERVICE);
-//            am.set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), pi);
-            am.set(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + 1500, pi);
+            am.set(AlarmManager.RTC_WAKEUP, time.getTimeInMillis(), pi);
 
             // set alarm notification channel
             NotificationChannel nc = new NotificationChannel(
