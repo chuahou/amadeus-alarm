@@ -1,6 +1,7 @@
 package dev.chuahou.amadeusalarm;
 
 import android.app.Activity;
+import android.app.KeyguardManager;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -11,6 +12,16 @@ public class DoneActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_done);
+
+        // show above lock screen
+        setTurnScreenOn(true);
+        setShowWhenLocked(true);
+        KeyguardManager km =
+                (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+        if (km.isKeyguardLocked())
+        {
+            km.requestDismissKeyguard(this, null);
+        }
 
         // wait and quit
         final int duration =
