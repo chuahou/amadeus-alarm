@@ -1,12 +1,34 @@
 <resources>
     <string name="app_name">Amadeus</string>
 
-    <!-- setting activity strings -->
-    <string name="setting_alarm">Turn ON alarm</string>
-    <string name="unsetting_alarm">Turn OFF alarm</string>
+    <!-- LaunchActivity -->
+    <string name="connect_to_kurisu">Connect to Kurisu?</string>
+    <string name="connecting">Connecting...</string>
+    <string name="disconnected">Disconnected.</string>
+    <string name="logo_content_desc">Amadeus logo</string>
+    <string name="connect_desc">Connect</string>
+    <string name="cancel_desc">Cancel</string>
 
-    <!--- notification channel strings -->
+    <!-- CallActivity -->
+    <string name="call_from_kurisu">Call from Kurisu.</string>
+
+    <!-- SettingActivity -->
+    <string name="settings">Alarm Settings</string>
+    <string name="turn_on">Turn ON</string>
+    <string name="turn_off">Turn OFF</string>
+    <string name="status_on">Alarm turned on</string>
+    <string name="status_off">Alarm turned off</string>
+
+    <!-- Notification channel -->
+    <string name="nc_id">nc_alarm</string>
     <string name="nc_name">Alarm</string>
-    <string name="nc_id">Alarm</string>
-    <string name="nc_desc">Alarm channel</string>
+    <string name="nc_desc">Notification channel for alarms</string>
+    <string name="nc2_id">nc_notif</string>
+    <string name="nc2_name">Notifications</string>
+    <string name="nc2_desc">General notification channel</string>
+
+    <!-- Miscellaneous -->
+    <string name="unset">nullpo</string>
+    <string name="sg_desc">Steins;Gate worldline divergence</string>
+    <string name="kurisu_desc">Worried Kurisu</string>
 </resources>

@@ -4,40 +4,67 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg1"
     tools:context=".SettingActivity">
 
     <TimePicker
-        android:id="@+id/alarmTimePicker"
+        android:id="@+id/setting_timepicker"
+        style="@android:style/Widget.Material.Light.TimePicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="#00FFFFFF"
+        android:headerBackground="@android:color/transparent"
+        android:numbersBackgroundColor="@android:color/transparent"
+        android:numbersInnerTextColor="@android:color/background_light"
+        android:numbersSelectorColor="@color/colorAccent"
+        android:numbersTextColor="@android:color/background_light"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/alarmSetButton"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/setting_text"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:checked="false"
-        android:onClick="onSetClicked"
-        android:text="@string/setting_alarm"
+        android:fontFamily="Droid"
+        android:text="@string/unset"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textColor="#ffdec752"
+        android:textSize="22.0sp"
+        android:typeface="monospace"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/alarmTimePicker" />
+        app:layout_constraintTop_toBottomOf="@+id/setting_timepicker" />
 
     <Button
-        android:id="@+id/alarmUnsetButton"
-        android:layout_width="match_parent"
+        android:id="@+id/setting_onbutton"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:checked="false"
-        android:onClick="onUnsetClicked"
-        android:text="@string/unsetting_alarm"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="16dp"
+        android:onClick="onOnClicked"
+        android:text="@string/turn_on"
+        app:layout_constraintBottom_toTopOf="@+id/setting_offbutton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/alarmSetButton" />
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/setting_offbutton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="16dp"
+        android:onClick="onOffClicked"
+        android:text="@string/turn_off"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

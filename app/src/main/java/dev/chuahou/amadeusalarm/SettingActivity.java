@@ -1,30 +1,21 @@
 package dev.chuahou.amadeusalarm;
 
-import android.Manifest;
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.ToggleButton;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
-import dev.chuahou.amadeusalarm.alarm.AlarmReceiver;
-import dev.chuahou.amadeusalarm.alarm.Ringer;
 
 public class SettingActivity extends Activity
 {
-    private AlarmManager _alarmManager;
-    private PendingIntent _pendingIntent;
-    private TimePicker _timePicker;
+    private TextView _text;
+    private TimePicker _picker;
+
+    private final SimpleDateFormat _fmt = new SimpleDateFormat("MM-dd HH:mm");
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -32,95 +23,77 @@ public class SettingActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
 
-        // check permissions
-        if (!_checkPermissions())
+        // Get widgets
+        _text = findViewById(R.id.setting_text);
+        _picker = findViewById(R.id.setting_timepicker);
+
+        // Set picker to 24h
+        _picker.setIs24HourView(true);
+
+        // Set time picker to currently set alarm time
+        Calendar alarmTime = Alarm.getInstance().getAlarmTime(this);
+        if (alarmTime == null)
         {
-            Log.d(toString(), "No permissions");
-        };
-
-        // get time picker
-        _timePicker = (TimePicker) findViewById(R.id.alarmTimePicker);
-
-        // get system alarm manager
-        _alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+            _text.setText(R.string.status_off);
+        }
+        else
+        {
+            _text.setText(R.string.status_on);
+            _picker.setHour(alarmTime.get(Calendar.HOUR_OF_DAY));
+            _picker.setMinute(alarmTime.get(Calendar.MINUTE));
+            _text.append("\n" + _fmt.format(alarmTime.getTime()));
+        }
     }
 
     @Override
-    protected void onResume()
+    public void onResume()
     {
         super.onResume();
 
-        // stop alarm if it's somehow still ringing
-        if (Ringer.getInstance().isRinging())
-        {
-            Ringer.getInstance().stop();
-        }
+        // failsafe stop
+        Ringer.getInstance().stop();
     }
 
     /**
-     * Checks for necessary permissions.
+     * Handles turn alarm on button clicked.
+     * @param view
      */
-    private boolean _checkPermissions()
+    public void onOnClicked(View view)
     {
-        return (checkSelfPermission(Manifest.permission.WAKE_LOCK)
-                    == PackageManager.PERMISSION_GRANTED) &&
-               (checkSelfPermission(Manifest.permission.USE_FULL_SCREEN_INTENT)
-                    == PackageManager.PERMISSION_GRANTED);
-    }
+        Log.d("SETTING", "ON");
 
-    /**
-     * Sets the alarm with current time picker settings.
-     */
-    private void _setAlarm()
-    {
-        // get desired alarm time
-        Calendar alarmTime = Calendar.getInstance();
-        alarmTime.set(Calendar.HOUR_OF_DAY, _timePicker.getHour());
-        alarmTime.set(Calendar.MINUTE, _timePicker.getMinute());
-        alarmTime.set(Calendar.SECOND, 0);
+        // get desired time
+        Calendar time = Calendar.getInstance();
+        time.set(Calendar.HOUR_OF_DAY, _picker.getHour());
+        time.set(Calendar.MINUTE, _picker.getMinute());
+        time.set(Calendar.SECOND, 0);
 
-        // check against current time
-        Calendar currentTime = Calendar.getInstance();
-        if (alarmTime.getTimeInMillis() <= currentTime.getTimeInMillis())
+        // get current time and check if alarm should be next day
+        if (time.getTimeInMillis() < Calendar.getInstance().getTimeInMillis())
         {
-            // increase alarm time day by 1
-            alarmTime.add(Calendar.DATE, 1);
+            time.add(Calendar.DAY_OF_MONTH, 1);
         }
 
-        // construct intent and high priority notification
-        Intent intent =
-                new Intent(SettingActivity.this, AlarmReceiver.class);
-        _pendingIntent = PendingIntent.getBroadcast(
-                SettingActivity.this, 0, intent, 0);
+        // set alarm
+        Alarm.getInstance().setAlarmTime(time, this);
 
-//            _alarmManager.set(AlarmManager.RTC, alarmTime.getTimeInMillis(),
-//                    _pendingIntent);
-        _alarmManager.set(AlarmManager.RTC, currentTime.getTimeInMillis() + 1000, _pendingIntent);
-
-        Log.d(toString(), "Alarm set at" + alarmTime.toString());
+        // update text
+        _text.setText(R.string.status_on);
+        _text.append("\n" + _fmt.format(time.getTime()));
     }
 
     /**
-     * Unsets the alarm.
+     * Handles turn alarm off button clicked.
+     * @param view
      */
-    private void _unsetAlarm()
+    public void onOffClicked(View view)
     {
-        // TODO
-    }
+        Log.d("SETTING", "OFF");
 
-    /**
-     * Handles alarm button being clicked.
-     */
-    public void onSetClicked(View view)
-    {
-        _setAlarm();
-    }
+        // cancel alarm
+        Alarm.getInstance().cancel(this);
 
-    /**
-     * Handles unset alarm button being clicked.
-     */
-    public void onUnsetClicked(View view)
-    {
-        _unsetAlarm();
+        // update text
+        _text.setText(R.string.status_off);
     }
 }
