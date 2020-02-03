@@ -3,9 +3,9 @@ package dev.chuahou.amadeusalarm;
 import android.app.Activity;
 import android.app.KeyguardManager;
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -47,11 +47,16 @@ public class LaunchActivity extends Activity
         {
             _text.setText(R.string.connect_to_kurisu);
         }
+    }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
 
         // start animation
         ImageView logo = findViewById(R.id.launch_logo);
-        Handler handler = new Handler();
-        handler.post(new AnimationRunnable(this, logo, handler));
+        ((AnimationDrawable) logo.getDrawable()).start();
     }
 
     @Override

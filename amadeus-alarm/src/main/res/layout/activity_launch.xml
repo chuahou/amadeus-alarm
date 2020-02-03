@@ -14,7 +14,7 @@
         android:layout_centerHorizontal="true"
         android:adjustViewBounds="true"
         android:contentDescription="@string/logo_content_desc"
-        android:src="@drawable/logo39" />
+        android:src="@drawable/logo_animation" />
 
     <TextView
         android:id="@+id/launch_text"
