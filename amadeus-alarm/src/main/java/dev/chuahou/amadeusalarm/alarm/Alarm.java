@@ -61,9 +61,14 @@ public class Alarm
         // not set
         if (alarmTimeMillis < 0L) return null;
 
-        // return Calendar instance
+        // set Calendar instance
         Calendar c = Calendar.getInstance();
         c.setTimeInMillis(alarmTimeMillis);
+
+        // set alarm again in case of unexpected circumstances
+        setAlarmTime(context, c);
+
+        // return Calendar instance
         return c;
     }
 
