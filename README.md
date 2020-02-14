@@ -40,6 +40,6 @@ not been tested.
 
 - All assets belong to the original publishers 5pb Games etc.
 - Resources and assets taken from
-  [Yink's Amadeus](https://gitub.com/Yink/Amadeus)
+  [Yink's Amadeus](https://github.com/Yink/Amadeus)
 - Common code adapted from Yink's Amadeus
 
