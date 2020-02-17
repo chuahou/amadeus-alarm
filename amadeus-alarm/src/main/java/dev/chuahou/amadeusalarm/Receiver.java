@@ -9,12 +9,12 @@ import dev.chuahou.amadeusalarm.alarm.Alarm;
 
 public class Receiver extends BroadcastReceiver
 {
-    @Override
-    public void onReceive(Context context, Intent intent)
-    {
-        Log.d("RECEIVER", "RECEIVED");
+	@Override
+	public void onReceive(Context context, Intent intent)
+	{
+		Log.d("RECEIVER", "RECEIVED");
 
-        // ring alarm
-        Alarm.getInstance().startAlarm(context);
-    }
+		// ring alarm
+		Alarm.getInstance().startAlarm(context);
+	}
 }
